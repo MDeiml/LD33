@@ -33,6 +33,7 @@ public class PlayScreen implements Screen, ContactListener {
     private Animation wolfWalk;
     private Animation manStand;
     private Animation manWalk;
+    private Animation change; 
     private float animTime;
     private int animState;
     private boolean human;
@@ -128,6 +129,14 @@ public class PlayScreen implements Screen, ContactListener {
             
         }
         manStand = new Animation(0.500f,regs);
+        
+        regs = new TextureRegion[4];
+        for(int i = 0; i < 4; i++)
+        {
+            regs[i] = new TextureRegion(game.assetMngr.get("spritesheet.png", Texture.class), i*32, (i+2)*32, 32, 32);
+            
+        }
+        change = new Animation(0.120f,regs);
         
         
         
