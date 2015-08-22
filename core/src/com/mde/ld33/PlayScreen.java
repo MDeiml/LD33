@@ -225,7 +225,8 @@ public class PlayScreen implements Screen, ContactListener {
             animState = animState % 2 + 4;
         }
         
-        if(!justInteracted && human && Gdx.input.isKeyPressed(Keys.W)) {
+        boolean interact = Gdx.input.isKeyPressed(Keys.W) || (game.controller != null && game.controller.getButton(2));
+        if(!justInteracted && human && interact) {
             TiledMapTileLayer layer = (TiledMapTileLayer)level.getLayers().get(0);
             MapLayer oLayer = level.getLayers().get("objectLayer");
             int gid1 = (Integer)level.getTileSets().getTileSet("objects").getProperties().get("firstgid");
@@ -247,19 +248,20 @@ public class PlayScreen implements Screen, ContactListener {
                 updateLight();
             }
         }
-        justInteracted = Gdx.input.isKeyPressed(Keys.W);
+        justInteracted = interact;
         
-        boolean right = Gdx.input.isKeyPressed(Keys.D);
-        boolean left = Gdx.input.isKeyPressed(Keys.A);
+        boolean right = Gdx.input.isKeyPressed(Keys.D) || (game.controller != null && game.controller.getAxis(1) > 0.5f);
+        boolean left = Gdx.input.isKeyPressed(Keys.A) || (game.controller != null && game.controller.getAxis(1) < -0.5f);
         
         if(!human && (right || left) && (animTime - lastStep) > 0.360f && onGround > 0) {
             lastStep = (int)(animTime / 0.360f) * 0.360f;
             game.assetMngr.get("step.wav", Sound.class).play();
         }
         
+        boolean jump = (game.controller != null && game.controller.getButton(0)) || Gdx.input.isKeyPressed(Keys.SPACE);
         if(onGround > 0)
         {
-            if(Gdx.input.isKeyPressed(Keys.SPACE) && !justJumped)
+            if(jump && !justJumped)
             {
                 game.assetMngr.get("Jump.wav", Sound.class).play(0.4f);
                 player.applyLinearImpulse(0, human ? 10 : 12, player.getPosition().x, player.getPosition().y, true);
@@ -311,7 +313,7 @@ public class PlayScreen implements Screen, ContactListener {
             animState = animState % 2;
         }
         
-        justJumped = Gdx.input.isKeyPressed(Keys.SPACE);
+        justJumped = jump;
         world.step(delta, 8, 6);
     }
 
