@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="30" tilewidth="32" tileheight="32" nextobjectid="1">
+ <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32" tilecount="16">
+  <image source="tileset_cave.png" width="128" height="128"/>
+ </tileset>
+ <tileset firstgid="17" name="light" tilewidth="32" tileheight="32" tilecount="4">
+  <image source="light.png" width="64" height="64"/>
+ </tileset>
+ <layer name="Kachelebene 1" width="50" height="30">
+  <data encoding="base64" compression="zlib">
+   eJzVV+0OwiAMrCabmWb6/m+r+0GC2I8rFByXNDExsB53tGUlohWIuxEakP2liNzzyPNh5Ipgc3wT+d7i5BCNjXhN0fwTkNxvYVn3g6ZvlIdGgfPWDBpweNH8HBJG8tg/8ey090gt0pldhWjhONpTaA/ROB26lmeArPMg947kI4SLVjO19RGa7Nl+VPzmcuF6IVrztV7e4tedfuctZPZqATKXzNIPJS6Wv0rv/Bs19yT3zlm0ku78jH29tn6fDdZ97wWuNrb4wOLRS5PUO6L8bPHQ7vKF2uekxIf7jkcjjYe1R8taNC8Pj/xtjGpxQKp3ETW5hkeel7c3lDNSVE/JzxeZbRbj/1ng4ZHmEe/s2LO31sxIXs8Sfd+baOQctDem9N6q4dFDD+7NYc3wZwjpXGcIqSdw8QaCPwy1
+  </data>
+ </layer>
+</map>
