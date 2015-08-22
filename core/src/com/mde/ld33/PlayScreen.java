@@ -1,6 +1,7 @@
 package com.mde.ld33;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.math.Vector2;
@@ -16,6 +17,8 @@ public class PlayScreen implements Screen {
     private float unprocessed;
     private Body player;
     private Fixture foot;
+    private int onGround;
+    
     
     public PlayScreen(LD33 game) {
         this.game = game;
@@ -60,6 +63,19 @@ public class PlayScreen implements Screen {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         cam.update();
         b2dr.render(world, cam.combined);
+    }
+    
+    public void Jump()
+    {
+        if(onGround > 0)
+        {
+            if(Gdx.input.isKeyPressed(Keys.SPACE))
+            {
+                player.applyLinearImpulse(0, 10, player.getPosition().x, player.getPosition().y, true);
+            }
+            
+            
+        }
     }
 
     @Override
