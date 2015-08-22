@@ -10,6 +10,8 @@ import com.badlogic.gdx.physics.box2d.*;
 
 public class PlayScreen implements Screen, ContactListener {
 
+    private static final float SPEED = 3f;
+    
     private LD33 game;
     private World world;
     private OrthographicCamera cam;
@@ -50,6 +52,7 @@ public class PlayScreen implements Screen, ContactListener {
         Body temp = world.createBody(bdef);
         
         fdef.isSensor = false;
+        fdef.friction = 1f;
         shape.setAsBox(5, 0.5f);
         temp.createFixture(fdef);
     }
@@ -67,7 +70,31 @@ public class PlayScreen implements Screen, ContactListener {
                 player.applyLinearImpulse(0, 10, player.getPosition().x, player.getPosition().y, true);
             }
             
+            Vector2 vel = player.getLinearVelocity();
+            Vector2 pos = player.getPosition();
             
+            if(Math.abs(vel.x) > SPEED) {
+                vel.x = SPEED * Math.signum(vel.x);
+                player.setLinearVelocity(vel);
+            }
+            
+            boolean right = Gdx.input.isKeyPressed(Keys.D);
+            boolean left = Gdx.input.isKeyPressed(Keys.A);
+            
+            if(right || left) {
+                player.getFixtureList().get(0).setFriction(0.2f);
+            }else {
+                player.getFixtureList().get(0).setFriction(3f);
+            }
+            
+            if(right && vel.x < SPEED) {
+                player.applyLinearImpulse(2f, 0, pos.x, pos.y, true);
+            }
+            if(left && vel.y > -SPEED) {
+                player.applyLinearImpulse(-2f, 0, pos.x, pos.y, true);
+            }
+        }else {
+            player.getFixtureList().get(0).setFriction(0);
         }
         justJumped = Gdx.input.isKeyPressed(Keys.SPACE);
         world.step(delta, 8, 6);
