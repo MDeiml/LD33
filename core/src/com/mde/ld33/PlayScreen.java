@@ -34,6 +34,7 @@ public class PlayScreen implements Screen, ContactListener {
     private Animation wolfWalk;
     private float animTime;
     private int animState;
+    private boolean human;
     
     public PlayScreen(LD33 game) {
         this.game = game;
