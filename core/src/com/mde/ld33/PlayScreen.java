@@ -18,6 +18,7 @@ public class PlayScreen implements Screen, ContactListener {
     private Body player;
     private Fixture foot;
     private int onGround;
+    private boolean justJumped;
     
     
     public PlayScreen(LD33 game) {
@@ -59,7 +60,7 @@ public class PlayScreen implements Screen, ContactListener {
     }
     
     public void update(float delta) {
-        if(onGround > 0)
+        if(onGround > 0 && !justJumped)
         {
             if(Gdx.input.isKeyPressed(Keys.SPACE))
             {
@@ -68,6 +69,7 @@ public class PlayScreen implements Screen, ContactListener {
             
             
         }
+        justJumped = Gdx.input.isKeyPressed(Keys.SPACE);
         world.step(delta, 8, 6);
     }
 
