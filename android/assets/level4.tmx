@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="50" tilewidth="32" tileheight="32" nextobjectid="8">
+ <tileset firstgid="1" name="tileset_cave" tilewidth="32" tileheight="32" tilecount="16">
+  <image source="tileset_cave.png" width="128" height="128"/>
+ </tileset>
+ <tileset firstgid="17" name="light" tilewidth="32" tileheight="32" tilecount="4">
+  <image source="light.png" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="21" name="objects" tilewidth="32" tileheight="32" tilecount="64">
+  <image source="spritesheet.png" width="256" height="256"/>
+ </tileset>
+ <layer name="Kachelebene 1" width="30" height="50">
+  <data encoding="base64" compression="zlib">
+   eJzFl12KwzAMhMNCW5qS3qb73PufaldQgRD6GdlyOuCH4tRfxpZk5bpt21WN29ari8FYzfwm9w5wHwu4pMjzCq8sz/NKJsvyfAZX6tvcVfEUcatej//xk4yn83z1bL3/ovkYxdTx+e2JcmH/DI/H81oRl+eexv+0dmNEMWLlr+auim3tmTlyH0lHM1d79vzR+yF7XpH0HHHR8+7kkvZkfhVXivNsZg9GuFbuVvkjXMkfZc9wSTonUPYsl6T3HWF3cCUf9d7JJclatwdsXSvpuXcDP5PXV/J7/jbz+P6O7myvb5hhIr2CvsNn2ch3imR2CPWa9Q28VtTHSXGcV3qxSNZaaN7O5q/V50VstN+oCKkZpO56heps7uj3wqiiPr+Dy7nlna3HH62Juu5mHrJ7IZN1XoiimumxyZv1XVSpqVmtZj/dirgyBlZ+p0jWw3hmNN5fCTda9+LM01lHeyHvLNlDzdQrGcfePYjcfxVuNQ+Q+I3eH13H8o32OLND9yJncZHxB8iND8w=
+  </data>
+ </layer>
+ <objectgroup name="objectLayer">
+  <object id="4" gid="64" x="832" y="1440" width="32" height="32">
+   <properties>
+    <property name="TargetX" value="23"/>
+    <property name="TargetY" value="6"/>
+   </properties>
+  </object>
+  <object id="7" gid="64" x="96" y="832" width="32" height="32">
+   <properties>
+    <property name="TargetX" value="6"/>
+    <property name="TargetY" value="24"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
