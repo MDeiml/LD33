@@ -7,6 +7,8 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -32,6 +34,7 @@ public class PlayScreen implements Screen, ContactListener {
     private Body player;
     private int onGround;
     private boolean justJumped;
+    private boolean justInteracted;
     private Animation wolfStand;
     private Animation wolfWalk;
     private Animation manStand;
@@ -66,6 +69,8 @@ public class PlayScreen implements Screen, ContactListener {
         levelCam = new OrthographicCamera();
         bgCam = new OrthographicCamera(1,1);
         
+//        MapLayer objectLayer = level.getLayers().get(1);
+        
         int lWidth = ((TiledMapTileLayer)level.getLayers().get(0)).getWidth();
         int lHeight = ((TiledMapTileLayer)level.getLayers().get(0)).getHeight();
         //light
@@ -77,12 +82,13 @@ public class PlayScreen implements Screen, ContactListener {
         FixtureDef fdef = new FixtureDef();
         PolygonShape shape = new PolygonShape();
         
+        int gid1 = (Integer)level.getTileSets().getTileSet("objects").getProperties().get("firstgid");
         TiledMapTileLayer layer = (TiledMapTileLayer)level.getLayers().get(0);
         for(int y = 0; y < layer.getHeight(); y++) {
             int start = -1;
             for(int x = 0; x < layer.getWidth(); x++) {
                 if(layer.getCell(x, y) != null) {
-                    if(start == -1)
+                    if(start == -1 && layer.getCell(x, y).getTile().getId() != gid1+43)
                         start = x;
                 }else if(start != -1) {
                     bdef.type = BodyDef.BodyType.StaticBody;
@@ -176,6 +182,7 @@ public class PlayScreen implements Screen, ContactListener {
         TiledMapTileLayer layer = (TiledMapTileLayer)level.getLayers().get(0);
         TiledMapTileSet lightSet = level.getTileSets().getTileSet("light");
         int gid = (Integer)lightSet.getProperties().get("firstgid");
+        int gid1 = (Integer)level.getTileSets().getTileSet("objects").getProperties().get("firstgid");
         lightId = gid+1;
         for(int x = 0; x < lightLayer.getWidth(); x++) {
             boolean light = true;
@@ -183,9 +190,12 @@ public class PlayScreen implements Screen, ContactListener {
                 if(lightLayer.getCell(x, y) == null) {
                     lightLayer.setCell(x, y, new TiledMapTileLayer.Cell());
                 }
-                if(layer.getCell(x, y) != null) {
+                if(layer.getCell(x, y) != null && layer.getCell(x, y).getTile().getId() != gid1+42) {
                     if(light && y != 0) {
-                        lightLayer.getCell(x, y).setTile(lightSet.getTile(gid+3));
+                        if(layer.getCell(x, y).getTile().getId() != gid1+40)
+                            lightLayer.getCell(x, y).setTile(lightSet.getTile(gid+3));
+                        else
+                            lightLayer.getCell(x, y).setTile(lightSet.getTile(gid+1));
                     }else {
                         lightLayer.getCell(x, y).setTile(lightSet.getTile(gid+0));
                     }
@@ -215,6 +225,30 @@ public class PlayScreen implements Screen, ContactListener {
             animState = animState % 2 + 4;
         }
         
+        if(!justInteracted && human && Gdx.input.isKeyPressed(Keys.W)) {
+            TiledMapTileLayer layer = (TiledMapTileLayer)level.getLayers().get(0);
+            MapLayer oLayer = level.getLayers().get("objectLayer");
+            int gid1 = (Integer)level.getTileSets().getTileSet("objects").getProperties().get("firstgid");
+            int x = (int)player.getPosition().x;
+            int y = (int)player.getPosition().y;
+            TiledMapTileLayer.Cell cell = layer.getCell(x, y);
+            if(cell != null && (cell.getTile().getId() == gid1+43 || cell.getTile().getId() == gid1+44)) {
+                int tx = 0, ty = 0;
+                for(MapObject o : oLayer.getObjects()) {
+                    if(o.getProperties().get("x", Float.class)/32 == x &&
+                       o.getProperties().get("y", Float.class)/32+1 == y) {
+                        tx = Integer.parseInt(o.getProperties().get("TargetX", String.class));
+                        ty = Integer.parseInt(o.getProperties().get("TargetY", String.class));
+                    }
+                }
+                int lever = cell.getTile().getId();
+                layer.getCell(tx, ty).setTile(level.getTileSets().getTile(lever == gid1+43 ? gid1+42 : gid1+40));
+                cell.setTile(level.getTileSets().getTile(lever == gid1+43 ? gid1+44 : gid1+43));
+                updateLight();
+            }
+        }
+        justInteracted = Gdx.input.isKeyPressed(Keys.W);
+        
         boolean right = Gdx.input.isKeyPressed(Keys.D);
         boolean left = Gdx.input.isKeyPressed(Keys.A);
         
@@ -231,14 +265,12 @@ public class PlayScreen implements Screen, ContactListener {
                 player.applyLinearImpulse(0, human ? 10 : 12, player.getPosition().x, player.getPosition().y, true);
             }
             
-            System.out.println("b");
             if(right || left) {
                 player.getFixtureList().get(0).setFriction(0.05f);
             }else {
                 player.getFixtureList().get(0).setFriction(human ? 3f : 1f);
             }
         }else {
-            System.out.println("a");
             player.getFixtureList().get(0).setFriction(0);
         }
         
@@ -315,7 +347,7 @@ public class PlayScreen implements Screen, ContactListener {
         //level
         levelCam.update();
         levelRenderer.setView(levelCam);
-        levelRenderer.render(new int[] {0});
+        levelRenderer.render(new int[] {0,1});
         //player
         game.batch.setProjectionMatrix(cam.combined);
         game.batch.begin();
@@ -341,7 +373,7 @@ public class PlayScreen implements Screen, ContactListener {
         game.batch.end();
         //light
         levelRenderer.setView(levelCam);
-        levelRenderer.render(new int[] {1});
+        levelRenderer.render(new int[] {2});
         //debug
 //        b2dr.render(world, cadm.combined);
     }

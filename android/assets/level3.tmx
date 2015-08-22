@@ -1,21 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="30" tilewidth="32" tileheight="32" nextobjectid="1">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="30" tilewidth="32" tileheight="32" nextobjectid="2">
  <properties>
   <property name="SpawnX" value="1"/>
   <property name="SpawnY" value="3"/>
  </properties>
- <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32" tilecount="16">
+ <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32">
   <image source="tileset_cave.png" width="128" height="128"/>
  </tileset>
+<<<<<<< HEAD
  <tileset firstgid="17" name="objects" tilewidth="32" tileheight="32" tilecount="64">
   <image source="spritesheet.png" width="256" height="256"/>
  </tileset>
  <tileset firstgid="81" name="light" tilewidth="32" tileheight="32" tilecount="4">
+=======
+ <tileset firstgid="17" name="objects" tilewidth="32" tileheight="32">
+  <image source="spritesheet.png" width="256" height="256"/>
+ </tileset>
+ <tileset firstgid="81" name="light" tilewidth="32" tileheight="32">
+>>>>>>> e2d780c211f494596631408763d9b261c1c8c3ed
   <image source="light.png" width="64" height="64"/>
  </tileset>
  <layer name="Kachelebene 1" width="50" height="30">
   <data encoding="base64" compression="zlib">
-   eJztl+EKwyAMhLOOdXTSvc/e/8VWfwglTZNUT7Tgwf1ZS+aHNRdnIpqZA8laNn8KHTJq8fV5fMbQUpH57gxJaf8shnerBV6UtTd34Yh60eDw6LF5Yn4C6nKhOKT1TsC6FjuKQ6uDqqvtKYpjcbDw3PPWlXorXxvyfGh5XJJDUl1eb/SrvjQ4+tLg6EtWz0+5863w3xOoTsx8bS/4bxLLSjK3xL7ScWZJ7/2E5x6jZgeeUTmZG4znHmv33py5dM/FM9fKZYnjyv2eyzovtYScZaI0jp7v61w1Zr0W8p7x1F9q9GSEcnoVQjl9V+vHrXK8pO9qGX7mWt8RmqOUs+RbGD76D9K3DlQ=
+   eJztl+EKwyAMhLOOdXTSvc9g7/9cqz+EcksTGyNa8OB+rB0hH9aczkQ0gwPxWja/Ch0MtbC/HB8xtFRkvjpDUlo/jeHZqsGT0tbmKhxRDxocObptnsB3h7ooLw6u38mxrsbuxSHV8aorrakXx5LBgrmXW5ebrdib5/6Q8rgkh7i6WG/Mq740OPrS4OhL2sxPufNu1SCjL/yOmS+tBT7jWFbiuTn2lfizS/zfR3gv2evsgBllydygvM+xdO+1nEv3XJi5Wi5zHGfu9yhtv9SS51kmSuLo+b6OqnHWa6HcPZ7mS08zeS/LrPKQZe5K87hVjpfMXSnDj1zrO/Lm8GC1fgvD//4B3RUOjg==
   </data>
  </layer>
+ <objectgroup name="objectLayer">
+  <object id="1" gid="60" x="1280" y="576" width="32" height="32">
+   <properties>
+    <property name="TargetX" value="29"/>
+    <property name="TargetY" value="11"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

@@ -29,6 +29,6 @@ public class LD33 extends Game {
         assetMngr.finishLoadingAsset("skin.atlas");
         assetMngr.load("skin.json", Skin.class, new SkinLoader.SkinParameter("skin.atlas"));
         assetMngr.finishLoading();
-        setScreen(new MainMenuScreen(this));
+        setScreen(new PlayScreen(this, 3));
     }
 }
