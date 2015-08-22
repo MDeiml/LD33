@@ -7,21 +7,28 @@
  <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32">
   <image source="tileset_cave.png" width="128" height="128"/>
  </tileset>
+<<<<<<< HEAD
+ <tileset firstgid="17" name="objects" tilewidth="32" tileheight="32" tilecount="64">
+  <image source="spritesheet.png" width="256" height="256"/>
+ </tileset>
+ <tileset firstgid="81" name="light" tilewidth="32" tileheight="32" tilecount="4">
+=======
  <tileset firstgid="17" name="objects" tilewidth="32" tileheight="32">
   <image source="spritesheet.png" width="256" height="256"/>
  </tileset>
  <tileset firstgid="81" name="light" tilewidth="32" tileheight="32">
+>>>>>>> e2d780c211f494596631408763d9b261c1c8c3ed
   <image source="light.png" width="64" height="64"/>
  </tileset>
  <layer name="Kachelebene 1" width="50" height="30">
   <data encoding="base64" compression="zlib">
-   eJztl+EKgzAMhDPHHK649xns/Z9r9kdhnDGJbUor9OB+TF3sR22unYloBgfitWx+FTpk1MLxWXzE0FKR+eoMSWn+NIZnqwGelDY3V+GIetDgsOi2eQLfHeqivDi48U6OdTV2Lw6pjlddaU69OBYDC+aetS7XW3FsnutDyuOSHOLqYr3Rr/rS4OhLg6MvaT0/5c67wrunzP994XfMfGku8BrHshLPzbGvtN+zpOc+zH2LvfYOmFE5mRuU+xZL596cfek/F2aulsscx5nzPUpbL7XkuZeJkjh6Pq+jauz1Wsi6xlN/qdGTPZTTqzyU03elftwqx0v6rpThR671HXlzlHKWfAvDe/8ADsQOkA==
+   eJztl+EKwyAMhLOOdXTSvc9g7/9cqz+EcksTGyNa8OB+rB0hH9aczkQ0gwPxWja/Ch0MtbC/HB8xtFRkvjpDUlo/jeHZqsGT0tbmKhxRDxocObptnsB3h7ooLw6u38mxrsbuxSHV8aorrakXx5LBgrmXW5ebrdib5/6Q8rgkh7i6WG/Mq740OPrS4OhL2sxPufNu1SCjL/yOmS+tBT7jWFbiuTn2lfizS/zfR3gv2evsgBllydygvM+xdO+1nEv3XJi5Wi5zHGfu9yhtv9SS51kmSuLo+b6OqnHWa6HcPZ7mS08zeS/LrPKQZe5K87hVjpfMXSnDj1zrO/Lm8GC1fgvD//4B3RUOjg==
   </data>
  </layer>
- <objectgroup name="Objektebene 1">
+ <objectgroup name="objectLayer">
   <object id="1" gid="60" x="1280" y="576" width="32" height="32">
    <properties>
-    <property name="TargetX" value="28"/>
+    <property name="TargetX" value="29"/>
     <property name="TargetY" value="11"/>
    </properties>
   </object>

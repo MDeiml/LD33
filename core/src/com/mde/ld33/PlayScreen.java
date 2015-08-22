@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -33,6 +34,7 @@ public class PlayScreen implements Screen, ContactListener {
     private Body player;
     private int onGround;
     private boolean justJumped;
+    private boolean justInteracted;
     private Animation wolfStand;
     private Animation wolfWalk;
     private Animation manStand;
@@ -188,7 +190,7 @@ public class PlayScreen implements Screen, ContactListener {
                 if(lightLayer.getCell(x, y) == null) {
                     lightLayer.setCell(x, y, new TiledMapTileLayer.Cell());
                 }
-                if(layer.getCell(x, y) != null) {
+                if(layer.getCell(x, y) != null && layer.getCell(x, y).getTile().getId() != gid1+42) {
                     if(light && y != 0) {
                         if(layer.getCell(x, y).getTile().getId() != gid1+40)
                             lightLayer.getCell(x, y).setTile(lightSet.getTile(gid+3));
@@ -223,23 +225,43 @@ public class PlayScreen implements Screen, ContactListener {
             animState = animState % 2 + 4;
         }
         
-        if(Gdx.input.isKeyPressed(Keys.W)) {
+        boolean interact = Gdx.input.isKeyPressed(Keys.W) || (game.controller != null && game.controller.getButton(2));
+        if(!justInteracted && human && interact) {
             TiledMapTileLayer layer = (TiledMapTileLayer)level.getLayers().get(0);
             MapLayer oLayer = level.getLayers().get("objectLayer");
-//            if(layer.getCell((int)player.getPosition().x, (int)player.getPosition().y))
+            int gid1 = (Integer)level.getTileSets().getTileSet("objects").getProperties().get("firstgid");
+            int x = (int)player.getPosition().x;
+            int y = (int)player.getPosition().y;
+            TiledMapTileLayer.Cell cell = layer.getCell(x, y);
+            if(cell != null && (cell.getTile().getId() == gid1+43 || cell.getTile().getId() == gid1+44)) {
+                int tx = 0, ty = 0;
+                for(MapObject o : oLayer.getObjects()) {
+                    if(o.getProperties().get("x", Float.class)/32 == x &&
+                       o.getProperties().get("y", Float.class)/32+1 == y) {
+                        tx = Integer.parseInt(o.getProperties().get("TargetX", String.class));
+                        ty = Integer.parseInt(o.getProperties().get("TargetY", String.class));
+                    }
+                }
+                int lever = cell.getTile().getId();
+                layer.getCell(tx, ty).setTile(level.getTileSets().getTile(lever == gid1+43 ? gid1+42 : gid1+40));
+                cell.setTile(level.getTileSets().getTile(lever == gid1+43 ? gid1+44 : gid1+43));
+                updateLight();
+            }
         }
+        justInteracted = interact;
         
-        boolean right = Gdx.input.isKeyPressed(Keys.D);
-        boolean left = Gdx.input.isKeyPressed(Keys.A);
+        boolean right = Gdx.input.isKeyPressed(Keys.D) || (game.controller != null && game.controller.getAxis(1) > 0.5f);
+        boolean left = Gdx.input.isKeyPressed(Keys.A) || (game.controller != null && game.controller.getAxis(1) < -0.5f);
         
         if(!human && (right || left) && (animTime - lastStep) > 0.360f && onGround > 0) {
             lastStep = (int)(animTime / 0.360f) * 0.360f;
             game.assetMngr.get("step.wav", Sound.class).play();
         }
         
+        boolean jump = (game.controller != null && game.controller.getButton(0)) || Gdx.input.isKeyPressed(Keys.SPACE);
         if(onGround > 0)
         {
-            if(Gdx.input.isKeyPressed(Keys.SPACE) && !justJumped)
+            if(jump && !justJumped)
             {
                 game.assetMngr.get("Jump.wav", Sound.class).play(0.4f);
                 player.applyLinearImpulse(0, human ? 10 : 12, player.getPosition().x, player.getPosition().y, true);
@@ -291,7 +313,7 @@ public class PlayScreen implements Screen, ContactListener {
             animState = animState % 2;
         }
         
-        justJumped = Gdx.input.isKeyPressed(Keys.SPACE);
+        justJumped = jump;
         world.step(delta, 8, 6);
     }
 
