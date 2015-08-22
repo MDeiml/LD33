@@ -41,6 +41,7 @@ public class PlayScreen implements Screen, ContactListener {
     private OrthographicCamera levelCam;
     private OrthographicCamera bgCam;
     private TiledMapTileLayer lightLayer;
+    private int lightId;
     
     public PlayScreen(LD33 game) {
         this.game = game;
@@ -80,7 +81,7 @@ public class PlayScreen implements Screen, ContactListener {
                     bdef.position.set((start+x)/2f, y+0.5f);
                     Body b = world.createBody(bdef);
                     
-                    shape.setAsBox((start-x)/2f, 0.5f);
+                    shape.setAsBox((x-start)/2f, 0.5f);
                     fdef.shape = shape;
                     fdef.isSensor = false;
                     b.createFixture(fdef);
@@ -92,7 +93,7 @@ public class PlayScreen implements Screen, ContactListener {
                 bdef.position.set((start+layer.getWidth())/2f, y+0.5f);
                 Body b = world.createBody(bdef);
 
-                shape.setAsBox((start-layer.getWidth())/2f, 0.5f);
+                shape.setAsBox((layer.getWidth()-start)/2f, 0.5f);
                 fdef.shape = shape;
                 fdef.isSensor = false;
                 b.createFixture(fdef);
@@ -142,9 +143,9 @@ public class PlayScreen implements Screen, ContactListener {
         fdef.friction = 1;
         player.createFixture(fdef).setUserData("player");
         
-//        shape.setAsBox(0.3f, 0.1f, new Vector2(0, -0.45f), 0);
-//        fdef.isSensor = true;
-//        player.createFixture(fdef).setUserData("foot");
+        shape.setAsBox(0.3f, 0.1f, new Vector2(0, -0.45f), 0);
+        fdef.isSensor = true;
+        player.createFixture(fdef).setUserData("foot");
         
         bdef.type = BodyDef.BodyType.StaticBody;
         bdef.position.set(0, -2);
@@ -159,6 +160,7 @@ public class PlayScreen implements Screen, ContactListener {
         TiledMapTileLayer layer = (TiledMapTileLayer)level.getLayers().get(0);
         TiledMapTileSet lightSet = level.getTileSets().getTileSet("light");
         int gid = (Integer)lightSet.getProperties().get("firstgid");
+        lightId = gid+1;
         for(int x = 0; x < lightLayer.getWidth(); x++) {
             boolean light = true;
             for(int y = lightLayer.getHeight()-1; y >= 0; y--) {
@@ -173,7 +175,6 @@ public class PlayScreen implements Screen, ContactListener {
                     }
                     light = false;
                 }else if(light) {
-                    System.out.println(x);
                     lightLayer.getCell(x, y).setTile(lightSet.getTile(gid+1));
                 }else {
                     lightLayer.getCell(x, y).setTile(lightSet.getTile(gid+0));
@@ -189,6 +190,8 @@ public class PlayScreen implements Screen, ContactListener {
     
     public void update(float delta) {
         
+        human = lightLayer.getCell((int)player.getPosition().x, (int)player.getPosition().y).getTile().getId() != lightId;
+        
         boolean right = Gdx.input.isKeyPressed(Keys.D);
         boolean left = Gdx.input.isKeyPressed(Keys.A);
         
@@ -203,7 +206,7 @@ public class PlayScreen implements Screen, ContactListener {
             if(right || left) {
                 player.getFixtureList().get(0).setFriction(0.05f);
             }else {
-                player.getFixtureList().get(0).setFriction(human ? 3f : 0.2f);
+                player.getFixtureList().get(0).setFriction(human ? 3f : 1f);
             }
         }else {
             player.getFixtureList().get(0).setFriction(0);
@@ -313,9 +316,6 @@ public class PlayScreen implements Screen, ContactListener {
         Fixture a = contact.getFixtureA();
         Fixture b = contact.getFixtureB();
         
-        System.out.println(a.isSensor());
-        System.out.println(b.isSensor());
-        
         if("foot".equals(a.getUserData()) || "foot".equals(b.getUserData())) {
             onGround++;
         }
@@ -323,7 +323,6 @@ public class PlayScreen implements Screen, ContactListener {
 
     @Override
     public void endContact(Contact contact) {
-        System.out.println("b");
         Fixture a = contact.getFixtureA();
         Fixture b = contact.getFixtureB();
         
