@@ -30,6 +30,8 @@ public class PlayScreen implements Screen, ContactListener {
     private boolean justJumped;
     private Animation wolfStand;
     private Animation wolfWalk;
+    private Animation manStand;
+    private Animation manWalk;
     private float animTime;
     private int animState;
     private boolean human;
@@ -57,6 +59,23 @@ public class PlayScreen implements Screen, ContactListener {
             regs[i] = new TextureRegion(game.assetMngr.get("spritesheet.png", Texture.class), i*32, 0, 32, 32);
         }
         wolfStand = new Animation(0.500f,regs);
+        
+        regs = new TextureRegion[3];
+        for(int i = 0; i < 3; i++)
+        {
+            regs[i] = new TextureRegion(game.assetMngr.get("spritesheet.png", Texture.class), (i+2)*32, 32, 32, 32);
+            
+        }
+        manWalk = new Animation(0.120f,regs);
+        
+        regs = new TextureRegion[2];
+        for(int i = 0; i < 2; i++)
+        {
+            regs[i] = new TextureRegion(game.assetMngr.get("spritesheet.png", Texture.class), i*32, 32, 32, 32);
+            
+        }
+        manStand = new Animation(0.500f,regs);
+        
         
         
         BodyDef bdef = new BodyDef();
@@ -163,7 +182,7 @@ public class PlayScreen implements Screen, ContactListener {
         game.batch.begin();
         float px = (animState % 2) == 0 ? player.getPosition().x-0.5f : player.getPosition().x-0.5f+1;
         int w = (animState % 2) == 0 ? 1 : -1;
-        game.batch.draw((animState < 2 ? wolfStand : wolfWalk).getKeyFrame(animTime, true), px, player.getPosition().y-0.5f, w, 1);
+        game.batch.draw((animState < 2 ? (human ? manStand :wolfStand) :( human ?  manWalk : wolfWalk)).getKeyFrame(animTime, true), px, player.getPosition().y-0.5f, w, 1);
         game.batch.end();
         b2dr.render(world, cam.combined);
     }
