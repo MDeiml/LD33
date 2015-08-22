@@ -63,38 +63,51 @@ public class PlayScreen implements Screen, ContactListener {
     }
     
     public void update(float delta) {
-        if(onGround > 0 && !justJumped)
+        
+        boolean right = Gdx.input.isKeyPressed(Keys.D);
+        boolean left = Gdx.input.isKeyPressed(Keys.A);
+        
+        if(onGround > 0)
         {
-            if(Gdx.input.isKeyPressed(Keys.SPACE))
+            if(Gdx.input.isKeyPressed(Keys.SPACE) && !justJumped)
             {
                 player.applyLinearImpulse(0, 10, player.getPosition().x, player.getPosition().y, true);
             }
-            
-            Vector2 vel = player.getLinearVelocity();
-            Vector2 pos = player.getPosition();
-            
-            if(Math.abs(vel.x) > SPEED) {
-                vel.x = SPEED * Math.signum(vel.x);
-                player.setLinearVelocity(vel);
-            }
-            
-            boolean right = Gdx.input.isKeyPressed(Keys.D);
-            boolean left = Gdx.input.isKeyPressed(Keys.A);
-            
+
             if(right || left) {
+                System.out.println("geh");
                 player.getFixtureList().get(0).setFriction(0.2f);
             }else {
-                player.getFixtureList().get(0).setFriction(3f);
-            }
-            
-            if(right && vel.x < SPEED) {
-                player.applyLinearImpulse(2f, 0, pos.x, pos.y, true);
-            }
-            if(left && vel.y > -SPEED) {
-                player.applyLinearImpulse(-2f, 0, pos.x, pos.y, true);
+                System.out.println("steh");
+                player.getFixtureList().get(0).setFriction(100f);
             }
         }else {
             player.getFixtureList().get(0).setFriction(0);
+        }
+        
+        Vector2 vel = player.getLinearVelocity();
+        Vector2 pos = player.getPosition();
+        
+        float speed = SPEED;
+        
+        if(onGround == 0) {
+            if(vel.x < 0 && !left) {
+                speed = SPEED / 2;
+            }else if(!right) {
+                speed = SPEED / 2;
+            }
+        }
+        
+        if(Math.abs(vel.x) > speed) {
+            vel.x = speed * Math.signum(vel.x);
+            player.setLinearVelocity(vel);
+        }
+
+        if(right && vel.x < SPEED) {
+            player.applyLinearImpulse(1f, 0, pos.x, pos.y, true);
+        }
+        if(left && vel.y > -SPEED) {
+            player.applyLinearImpulse(-1f, 0, pos.x, pos.y, true);
         }
         justJumped = Gdx.input.isKeyPressed(Keys.SPACE);
         world.step(delta, 8, 6);
