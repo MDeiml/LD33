@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import java.util.ArrayList;
@@ -12,6 +14,11 @@ import java.util.ArrayList;
 public class PlayScreen implements Screen, ContactListener {
 
     private static final float SPEED = 3f;
+    
+    private static final int STAND_RIGHT = 0;
+    private static final int STAND_LEFT = 1;
+    private static final int WALK_RIGHT = 2;
+    private static final int WALK_LEFT = 3;
     
     private LD33 game;
     private World world;
@@ -23,16 +30,34 @@ public class PlayScreen implements Screen, ContactListener {
     private int onGround;
     private boolean justJumped;
     private ArrayList<Contact> playerContacts;
-    
+    private Animation wolfStand;
+    private Animation wolfWalk;
+    private float animTime;
+    private int animState;
     
     public PlayScreen(LD33 game) {
         this.game = game;
         world = new World(new Vector2(0, -20f), true);
         world.setContactListener(this);
-        cam = new OrthographicCamera(Gdx.graphics.getWidth() / 32, Gdx.graphics.getHeight()/ 32);
+        cam = new OrthographicCamera();
         b2dr = new Box2DDebugRenderer();
         unprocessed = 0;
         onGround = 0;
+        animTime = 0;
+        
+        TextureRegion[] regs = new TextureRegion[3];
+        for(int i = 0; i < 3; i++) {
+            regs[i] = new TextureRegion(game.assetMngr.get("grid.png", Texture.class), (i+2)*32, 0, 32, 32);
+        }
+        wolfWalk = new Animation(0.120f, regs);
+        
+        regs = new TextureRegion[2];
+        for(int i = 0; i < 2; i++)
+        {
+            regs[i] = new TextureRegion(game.assetMngr.get("grid.png", Texture.class), i*32, 0, 32, 32);
+        }
+        wolfStand = new Animation(0.500f,regs);
+        
         
         BodyDef bdef = new BodyDef();
         bdef.type = BodyDef.BodyType.DynamicBody;
@@ -106,10 +131,16 @@ public class PlayScreen implements Screen, ContactListener {
         }
 
         if(right && vel.x < SPEED) {
+            animState = WALK_RIGHT;
             player.applyLinearImpulse(onGround > 0 ? 2f : 1f, 0, pos.x, pos.y, true);
         }
         if(left && vel.x > -SPEED) {
+            animState = WALK_LEFT;
             player.applyLinearImpulse(onGround > 0 ? -2f : -1f, 0, pos.x, pos.y, true);
+        }
+        
+        if(onGround > 0 && !right && !left) {
+            animState = animState % 2;
         }
         justJumped = Gdx.input.isKeyPressed(Keys.SPACE);
         world.step(delta, 8, 6);
@@ -123,16 +154,27 @@ public class PlayScreen implements Screen, ContactListener {
             update(1/60f);
         }
         
+        animTime += delta;
+        
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         cam.update();
+        game.batch.setProjectionMatrix(cam.combined);
+        game.batch.begin();
+        float px = (animState % 2) == 0 ? player.getPosition().x-0.5f : player.getPosition().x-0.5f+1;
+        int w = (animState % 2) == 0 ? 1 : -1;
+        game.batch.draw((animState < 2 ? wolfStand : wolfWalk).getKeyFrame(animTime, true), px, player.getPosition().y-0.5f, w, 1);
+        game.batch.end();
         b2dr.render(world, cam.combined);
     }
     
    
 
     @Override
-    public void resize(int width, int height) {}
+    public void resize(int width, int height) {
+        cam.viewportWidth = width / 32f / 2f;
+        cam.viewportHeight = height / 32f / 2f;
+    }
 
     @Override
     public void pause() {}
