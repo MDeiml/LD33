@@ -50,6 +50,15 @@ public class PlayScreen implements Screen, ContactListener {
     }
     
     public void update(float delta) {
+        if(onGround > 0)
+        {
+            if(Gdx.input.isKeyPressed(Keys.SPACE))
+            {
+                player.applyLinearImpulse(0, 10, player.getPosition().x, player.getPosition().y, true);
+            }
+            
+            
+        }
         world.step(delta, 8, 6);
     }
 
@@ -67,18 +76,7 @@ public class PlayScreen implements Screen, ContactListener {
         b2dr.render(world, cam.combined);
     }
     
-    public void Jump()
-    {
-        if(onGround > 0)
-        {
-            if(Gdx.input.isKeyPressed(Keys.SPACE))
-            {
-                player.applyLinearImpulse(0, 10, player.getPosition().x, player.getPosition().y, true);
-            }
-            
-            
-        }
-    }
+   
 
     @Override
     public void resize(int width, int height) {}
