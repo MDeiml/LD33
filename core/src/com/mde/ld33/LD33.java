@@ -2,6 +2,7 @@ package com.mde.ld33;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -17,8 +18,10 @@ public class LD33 extends Game {
         assetMngr = new AssetManager();
         assetMngr.setLoader(TiledMap.class, new TmxMapLoader());
         assetMngr.load("spritesheet.png", Texture.class);
-        assetMngr.load("level1.tmx", TiledMap.class);
+        assetMngr.load("level2.tmx", TiledMap.class);
         assetMngr.load("caveBackround.png", Texture.class);
+        assetMngr.load("Jump.wav", Sound.class);
+        assetMngr.load("step.wav", Sound.class);
         assetMngr.finishLoading();
         setScreen(new PlayScreen(this));
     }

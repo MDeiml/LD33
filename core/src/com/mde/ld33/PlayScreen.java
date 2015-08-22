@@ -3,6 +3,7 @@ package com.mde.ld33;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -33,7 +34,9 @@ public class PlayScreen implements Screen, ContactListener {
     private Animation wolfWalk;
     private Animation manStand;
     private Animation manWalk;
+    private Animation change; 
     private float animTime;
+    private float lastStep;
     private int animState;
     private boolean human;
     private TiledMap level;
@@ -50,10 +53,11 @@ public class PlayScreen implements Screen, ContactListener {
         cam = new OrthographicCamera();
         b2dr = new Box2DDebugRenderer();
         unprocessed = 0;
-        onGround = 1;
+        onGround = 0;
         animTime = 0;
+        lastStep = 0;
         human = false;
-        level = game.assetMngr.get("level1.tmx");
+        level = game.assetMngr.get("level2.tmx");
         levelRenderer = new OrthogonalTiledMapRenderer(level, game.batch);
         levelCam = new OrthographicCamera();
         bgCam = new OrthographicCamera(1,1);
@@ -113,10 +117,10 @@ public class PlayScreen implements Screen, ContactListener {
         }
         wolfStand = new Animation(0.500f,regs);
         
-        regs = new TextureRegion[3];
-        for(int i = 0; i < 3; i++)
+        regs = new TextureRegion[5];
+        for(int i = 0; i < 5; i++)
         {
-            regs[i] = new TextureRegion(game.assetMngr.get("spritesheet.png", Texture.class), (i+2)*32, 32, 32, 32);
+            regs[i] = new TextureRegion(game.assetMngr.get("spritesheet.png", Texture.class), i*32, 32, 32, 32);
             
         }
         manWalk = new Animation(0.120f,regs);
@@ -124,10 +128,18 @@ public class PlayScreen implements Screen, ContactListener {
         regs = new TextureRegion[2];
         for(int i = 0; i < 2; i++)
         {
-            regs[i] = new TextureRegion(game.assetMngr.get("spritesheet.png", Texture.class), i*32, 32, 32, 32);
+            regs[i] = new TextureRegion(game.assetMngr.get("spritesheet.png", Texture.class), i*32, 64, 32, 32);
             
         }
         manStand = new Animation(0.500f,regs);
+        
+        regs = new TextureRegion[4];
+        for(int i = 0; i < 4; i++)
+        {
+            regs[i] = new TextureRegion(game.assetMngr.get("spritesheet.png", Texture.class), i*32, (i+2)*32, 32, 32);
+            
+        }
+        change = new Animation(0.120f,regs);
         
         
         
@@ -195,20 +207,27 @@ public class PlayScreen implements Screen, ContactListener {
         boolean right = Gdx.input.isKeyPressed(Keys.D);
         boolean left = Gdx.input.isKeyPressed(Keys.A);
         
+        if(!human && (right || left) && (animTime - lastStep) > 0.360f && onGround > 0) {
+            lastStep = (int)(animTime / 0.360f) * 0.360f;
+            game.assetMngr.get("step.wav", Sound.class).play();
+        }
         
         if(onGround > 0)
         {
             if(Gdx.input.isKeyPressed(Keys.SPACE) && !justJumped)
             {
+                game.assetMngr.get("Jump.wav", Sound.class).play(0.4f);
                 player.applyLinearImpulse(0, human ? 10 : 12, player.getPosition().x, player.getPosition().y, true);
             }
             
+            System.out.println("b");
             if(right || left) {
                 player.getFixtureList().get(0).setFriction(0.05f);
             }else {
                 player.getFixtureList().get(0).setFriction(human ? 3f : 1f);
             }
         }else {
+            System.out.println("a");
             player.getFixtureList().get(0).setFriction(0);
         }
         
