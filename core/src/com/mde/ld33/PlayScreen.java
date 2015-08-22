@@ -26,10 +26,8 @@ public class PlayScreen implements Screen, ContactListener {
     private Box2DDebugRenderer b2dr;
     private float unprocessed;
     private Body player;
-    private Fixture foot;
     private int onGround;
     private boolean justJumped;
-    private ArrayList<Contact> playerContacts;
     private Animation wolfStand;
     private Animation wolfWalk;
     private Animation manStand;
@@ -47,6 +45,7 @@ public class PlayScreen implements Screen, ContactListener {
         unprocessed = 0;
         onGround = 0;
         animTime = 0;
+        human = false;
         
         TextureRegion[] regs = new TextureRegion[3];
         for(int i = 0; i < 3; i++) {
@@ -119,14 +118,14 @@ public class PlayScreen implements Screen, ContactListener {
         {
             if(Gdx.input.isKeyPressed(Keys.SPACE) && !justJumped)
             {
-                player.applyLinearImpulse(0, 10, player.getPosition().x, player.getPosition().y, true);
+                player.applyLinearImpulse(0, human ? 10 : 12, player.getPosition().x, player.getPosition().y, true);
             }
             
             if(right || left) {
                 System.out.println("geh");
-                player.getFixtureList().get(0).setFriction(0.2f);
+                player.getFixtureList().get(0).setFriction(0.05f);
             }else {
-                player.getFixtureList().get(0).setFriction(3f);
+                player.getFixtureList().get(0).setFriction(human ? 3f : 0.1f);
             }
         }else {
             player.getFixtureList().get(0).setFriction(0);
@@ -135,7 +134,7 @@ public class PlayScreen implements Screen, ContactListener {
         Vector2 vel = player.getLinearVelocity();
         Vector2 pos = player.getPosition();
         
-        float speed = SPEED;
+        float speed = SPEED * (human ? 1 : 2f);
         
         if(onGround == 0) {
             if(vel.x < 0 && !left) {
@@ -150,11 +149,11 @@ public class PlayScreen implements Screen, ContactListener {
             player.setLinearVelocity(vel);
         }
 
-        if(right && vel.x < SPEED) {
+        if(right && vel.x < speed) {
             animState = WALK_RIGHT;
             player.applyLinearImpulse(onGround > 0 ? 2f : 1f, 0, pos.x, pos.y, true);
         }
-        if(left && vel.x > -SPEED) {
+        if(left && vel.x > -speed) {
             animState = WALK_LEFT;
             player.applyLinearImpulse(onGround > 0 ? -2f : -1f, 0, pos.x, pos.y, true);
         }
