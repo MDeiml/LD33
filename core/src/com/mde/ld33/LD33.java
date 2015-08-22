@@ -18,6 +18,7 @@ public class LD33 extends Game {
         assetMngr.setLoader(TiledMap.class, new TmxMapLoader());
         assetMngr.load("spritesheet.png", Texture.class);
         assetMngr.load("level1.tmx", TiledMap.class);
+        assetMngr.load("caveBackround.png", Texture.class);
         assetMngr.finishLoading();
         setScreen(new PlayScreen(this));
     }

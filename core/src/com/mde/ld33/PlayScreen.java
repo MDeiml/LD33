@@ -6,8 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -40,6 +39,7 @@ public class PlayScreen implements Screen, ContactListener {
     private TiledMap level;
     private TiledMapRenderer levelRenderer;
     private OrthographicCamera levelCam;
+    private TiledMapTileLayer lightLayer;
     
     public PlayScreen(LD33 game) {
         this.game = game;
@@ -54,6 +54,15 @@ public class PlayScreen implements Screen, ContactListener {
         level = game.assetMngr.get("level1.tmx");
         levelRenderer = new OrthogonalTiledMapRenderer(level, game.batch);
         levelCam = new OrthographicCamera();
+        
+        int lWidth = ((TiledMapTileLayer)level.getLayers().get(0)).getWidth();
+        int lHeight = ((TiledMapTileLayer)level.getLayers().get(0)).getHeight();
+        //light
+        lightLayer = new TiledMapTileLayer(lWidth, lHeight, 32, 32);
+        level.getLayers().add(lightLayer);
+        updateLight();
+        
+        TiledMapTileLayer layer = (TiledMapTileLayer)level.getLayers().get(0);
         
         TextureRegion[] regs = new TextureRegion[3];
         for(int i = 0; i < 3; i++) {
@@ -109,6 +118,33 @@ public class PlayScreen implements Screen, ContactListener {
         fdef.isSensor = false;
         shape.setAsBox(5, 0.5f);
         temp.createFixture(fdef);
+    }
+    
+    private void updateLight() {
+        TiledMapTileLayer layer = (TiledMapTileLayer)level.getLayers().get(0);
+        TiledMapTileSet lightSet = level.getTileSets().getTileSet("light");
+        int gid = (Integer)lightSet.getProperties().get("firstgid");
+        for(int x = 0; x < lightLayer.getWidth(); x++) {
+            boolean light = true;
+            for(int y = lightLayer.getHeight()-1; y >= 0; y--) {
+                if(lightLayer.getCell(x, y) == null) {
+                    lightLayer.setCell(x, y, new TiledMapTileLayer.Cell());
+                }
+                if(layer.getCell(x, y) != null) {
+                    if(light && y != 0) {
+                        lightLayer.getCell(x, y).setTile(lightSet.getTile(gid+3));
+                    }else {
+                        lightLayer.getCell(x, y).setTile(lightSet.getTile(gid+0));
+                    }
+                    light = false;
+                }else if(light) {
+                    System.out.println(x);
+                    lightLayer.getCell(x, y).setTile(lightSet.getTile(gid+1));
+                }else {
+                    lightLayer.getCell(x, y).setTile(lightSet.getTile(gid+0));
+                }
+            }
+        }
     }
     
     @Override
@@ -186,10 +222,16 @@ public class PlayScreen implements Screen, ContactListener {
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         cam.update();
+        //background
+        game.batch.setProjectionMatrix(cam.combined);
+        game.batch.begin();
+        Texture bg = game.assetMngr.get("caveBackround.png", Texture.class);
+        game.batch.draw(bg, -cam.viewportWidth/2, -cam.viewportHeight/2, cam.viewportWidth, cam.viewportHeight);
+        game.batch.end();
         //level
         levelCam.update();
         levelRenderer.setView(levelCam);
-        levelRenderer.render();
+        levelRenderer.render(new int[] {0});
         //player
         game.batch.setProjectionMatrix(cam.combined);
         game.batch.begin();
@@ -197,6 +239,9 @@ public class PlayScreen implements Screen, ContactListener {
         int w = (animState % 2) == 0 ? 1 : -1;
         game.batch.draw((animState < 2 ? (human ? manStand :wolfStand) :( human ?  manWalk : wolfWalk)).getKeyFrame(animTime, true), px, player.getPosition().y-0.5f, w, 1);
         game.batch.end();
+        //light
+        levelRenderer.setView(levelCam);
+        levelRenderer.render(new int[] {1});
         //debug
         b2dr.render(world, cam.combined);
     }
