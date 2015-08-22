@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
 
-public class PlayScreen implements Screen {
+public class PlayScreen implements Screen, ContactListener {
 
     private LD33 game;
     private World world;
@@ -23,9 +23,11 @@ public class PlayScreen implements Screen {
     public PlayScreen(LD33 game) {
         this.game = game;
         world = new World(new Vector2(0, -9.81f), true);
+        world.setContactListener(this);
         cam = new OrthographicCamera(Gdx.graphics.getWidth() / 32, Gdx.graphics.getHeight()/ 32);
         b2dr = new Box2DDebugRenderer();
         unprocessed = 0;
+        onGround = 0;
         
         BodyDef bdef = new BodyDef();
         bdef.type = BodyDef.BodyType.DynamicBody;
@@ -92,5 +94,31 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {}
+
+    @Override
+    public void beginContact(Contact contact) {
+        Fixture a = contact.getFixtureA();
+        Fixture b = contact.getFixtureB();
+        
+        if("foot".equals(a.getUserData()) || "foot".equals(b.getUserData())) {
+            onGround++;
+        }
+    }
+
+    @Override
+    public void endContact(Contact contact) {
+        Fixture a = contact.getFixtureA();
+        Fixture b = contact.getFixtureB();
+        
+        if("foot".equals(a.getUserData()) || "foot".equals(b.getUserData())) {
+            onGround--;
+        }
+    }
+
+    @Override
+    public void preSolve(Contact contact, Manifold oldManifold) {}
+
+    @Override
+    public void postSolve(Contact contact, ContactImpulse impulse) {}
     
 }
