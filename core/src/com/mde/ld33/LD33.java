@@ -13,7 +13,7 @@ public class LD33 extends Game {
     public void create () {
         batch = new SpriteBatch();
         assetMngr = new AssetManager();
-        assetMngr.load("grid.png", Texture.class);
+        assetMngr.load("spritesheet.png", Texture.class);
         assetMngr.finishLoading();
         setScreen(new PlayScreen(this));
     }
