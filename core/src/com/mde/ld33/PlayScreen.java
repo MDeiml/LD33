@@ -39,6 +39,7 @@ public class PlayScreen implements Screen, ContactListener {
     private TiledMap level;
     private TiledMapRenderer levelRenderer;
     private OrthographicCamera levelCam;
+    private OrthographicCamera bgCam;
     private TiledMapTileLayer lightLayer;
     
     public PlayScreen(LD33 game) {
@@ -48,12 +49,13 @@ public class PlayScreen implements Screen, ContactListener {
         cam = new OrthographicCamera();
         b2dr = new Box2DDebugRenderer();
         unprocessed = 0;
-        onGround = 0;
+        onGround = 1;
         animTime = 0;
         human = false;
         level = game.assetMngr.get("level1.tmx");
         levelRenderer = new OrthogonalTiledMapRenderer(level, game.batch);
         levelCam = new OrthographicCamera();
+        bgCam = new OrthographicCamera(1,1);
         
         int lWidth = ((TiledMapTileLayer)level.getLayers().get(0)).getWidth();
         int lHeight = ((TiledMapTileLayer)level.getLayers().get(0)).getHeight();
@@ -62,16 +64,49 @@ public class PlayScreen implements Screen, ContactListener {
         level.getLayers().add(lightLayer);
         updateLight();
         
+        BodyDef bdef = new BodyDef();
+        FixtureDef fdef = new FixtureDef();
+        PolygonShape shape = new PolygonShape();
+        
         TiledMapTileLayer layer = (TiledMapTileLayer)level.getLayers().get(0);
+        for(int y = 0; y < layer.getHeight(); y++) {
+            int start = -1;
+            for(int x = 0; x < layer.getWidth(); x++) {
+                if(layer.getCell(x, y) != null) {
+                    if(start == -1)
+                        start = x;
+                }else if(start != -1) {
+                    bdef.type = BodyDef.BodyType.StaticBody;
+                    bdef.position.set((start+x)/2f, y+0.5f);
+                    Body b = world.createBody(bdef);
+                    
+                    shape.setAsBox((start-x)/2f, 0.5f);
+                    fdef.shape = shape;
+                    fdef.isSensor = false;
+                    b.createFixture(fdef);
+                    start = -1;
+                }
+            }
+            if(start != -1) {
+                bdef.type = BodyDef.BodyType.StaticBody;
+                bdef.position.set((start+layer.getWidth())/2f, y+0.5f);
+                Body b = world.createBody(bdef);
+
+                shape.setAsBox((start-layer.getWidth())/2f, 0.5f);
+                fdef.shape = shape;
+                fdef.isSensor = false;
+                b.createFixture(fdef);
+            }
+        }
         
         TextureRegion[] regs = new TextureRegion[3];
         for(int i = 0; i < 3; i++) {
-            regs[i] = new TextureRegion(game.assetMngr.get("spritesheet.png", Texture.class), (i+2)*32, 0, 32, 32);
+            regs[i] = new TextureRegion(game.assetMngr.get("spritesheet.png", Texture.class), (i+4)*32, 0, 32, 32);
         }
         wolfWalk = new Animation(0.120f, regs);
         
-        regs = new TextureRegion[2];
-        for(int i = 0; i < 2; i++)
+        regs = new TextureRegion[4];
+        for(int i = 0; i < 4; i++)
         {
             regs[i] = new TextureRegion(game.assetMngr.get("spritesheet.png", Texture.class), i*32, 0, 32, 32);
         }
@@ -95,22 +130,22 @@ public class PlayScreen implements Screen, ContactListener {
         
         
         
-        BodyDef bdef = new BodyDef();
         bdef.type = BodyDef.BodyType.DynamicBody;
+        int sx = Integer.parseInt(level.getProperties().get("SpawnX", String.class));
+        int sy = Integer.parseInt(level.getProperties().get("SpawnY", String.class));
+        bdef.position.set(sx + 0.6f, sy + 0.5f);
         player = world.createBody(bdef);
         
-        FixtureDef fdef = new FixtureDef();
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(0.5f, 0.5f);
+        shape.setAsBox(0.5f, 0.45f);
+        fdef.isSensor = false;
         fdef.shape = shape;
         fdef.friction = 1;
         player.createFixture(fdef).setUserData("player");
         
-        shape.setAsBox(0.3f, 0.1f, new Vector2(0, -0.5f), 0);
-        fdef.isSensor = true;
-        player.createFixture(fdef).setUserData("foot");
+//        shape.setAsBox(0.3f, 0.1f, new Vector2(0, -0.45f), 0);
+//        fdef.isSensor = true;
+//        player.createFixture(fdef).setUserData("foot");
         
-        //TEMP
         bdef.type = BodyDef.BodyType.StaticBody;
         bdef.position.set(0, -2);
         Body temp = world.createBody(bdef);
@@ -166,10 +201,9 @@ public class PlayScreen implements Screen, ContactListener {
             }
             
             if(right || left) {
-                System.out.println("geh");
                 player.getFixtureList().get(0).setFriction(0.05f);
             }else {
-                player.getFixtureList().get(0).setFriction(human ? 3f : 0.1f);
+                player.getFixtureList().get(0).setFriction(human ? 3f : 0.2f);
             }
         }else {
             player.getFixtureList().get(0).setFriction(0);
@@ -221,12 +255,18 @@ public class PlayScreen implements Screen, ContactListener {
         
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        //cams
+        cam.position.x = player.getPosition().x;
+        cam.position.y = player.getPosition().y;
+        levelCam.position.x = player.getPosition().x * 32;
+        levelCam.position.y = player.getPosition().y * 32;
         cam.update();
+        bgCam.update();
         //background
-        game.batch.setProjectionMatrix(cam.combined);
+        game.batch.setProjectionMatrix(bgCam.combined);
         game.batch.begin();
         Texture bg = game.assetMngr.get("caveBackround.png", Texture.class);
-        game.batch.draw(bg, -cam.viewportWidth/2, -cam.viewportHeight/2, cam.viewportWidth, cam.viewportHeight);
+        game.batch.draw(bg, -0.5f, -0.5f, 1, 1);
         game.batch.end();
         //level
         levelCam.update();
@@ -273,6 +313,9 @@ public class PlayScreen implements Screen, ContactListener {
         Fixture a = contact.getFixtureA();
         Fixture b = contact.getFixtureB();
         
+        System.out.println(a.isSensor());
+        System.out.println(b.isSensor());
+        
         if("foot".equals(a.getUserData()) || "foot".equals(b.getUserData())) {
             onGround++;
         }
@@ -280,6 +323,7 @@ public class PlayScreen implements Screen, ContactListener {
 
     @Override
     public void endContact(Contact contact) {
+        System.out.println("b");
         Fixture a = contact.getFixtureA();
         Fixture b = contact.getFixtureB();
         
