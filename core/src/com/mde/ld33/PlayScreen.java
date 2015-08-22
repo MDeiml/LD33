@@ -21,6 +21,8 @@ public class PlayScreen implements Screen, ContactListener {
     private static final int STAND_LEFT = 1;
     private static final int WALK_RIGHT = 2;
     private static final int WALK_LEFT = 3;
+    private static final int CHANGE_RIGHT = 4;
+    private static final int CHANGE_LEFT = 5;
     
     private LD33 game;
     private World world;
@@ -34,7 +36,7 @@ public class PlayScreen implements Screen, ContactListener {
     private Animation wolfWalk;
     private Animation manStand;
     private Animation manWalk;
-    private Animation change; 
+    private Animation change;
     private float animTime;
     private float lastStep;
     private int animState;
@@ -46,7 +48,7 @@ public class PlayScreen implements Screen, ContactListener {
     private TiledMapTileLayer lightLayer;
     private int lightId;
     
-    public PlayScreen(LD33 game) {
+    public PlayScreen(LD33 game, int levelNr) {
         this.game = game;
         world = new World(new Vector2(0, -20f), true);
         world.setContactListener(this);
@@ -56,8 +58,10 @@ public class PlayScreen implements Screen, ContactListener {
         onGround = 0;
         animTime = 0;
         lastStep = 0;
-        human = false;
-        level = game.assetMngr.get("level2.tmx");
+        human = true;
+        game.assetMngr.load("level"+levelNr+".tmx", TiledMap.class);
+        game.assetMngr.finishLoadingAsset("level"+levelNr+".tmx");
+        level = game.assetMngr.get("level"+levelNr+".tmx");
         levelRenderer = new OrthogonalTiledMapRenderer(level, game.batch);
         levelCam = new OrthographicCamera();
         bgCam = new OrthographicCamera(1,1);
@@ -133,13 +137,13 @@ public class PlayScreen implements Screen, ContactListener {
         }
         manStand = new Animation(0.500f,regs);
         
-        regs = new TextureRegion[4];
-        for(int i = 0; i < 4; i++)
+        regs = new TextureRegion[2];
+        for(int i = 0; i < 2; i++)
         {
-            regs[i] = new TextureRegion(game.assetMngr.get("spritesheet.png", Texture.class), i*32, (i+2)*32, 32, 32);
+            regs[i] = new TextureRegion(game.assetMngr.get("spritesheet.png", Texture.class), i*32, 3*32, 32, 32);
             
         }
-        change = new Animation(0.120f,regs);
+        change = new Animation(0.100f,regs);
         
         
         
@@ -202,7 +206,14 @@ public class PlayScreen implements Screen, ContactListener {
     
     public void update(float delta) {
         
-        human = lightLayer.getCell((int)player.getPosition().x, (int)player.getPosition().y).getTile().getId() != lightId;
+        boolean h = lightLayer.getCell((int)player.getPosition().x, (int)player.getPosition().y).getTile().getId() != lightId;
+        
+        if(human != h) {
+            game.assetMngr.get("change.wav", Sound.class).play();
+            human = h;
+            animTime = 0;
+            animState = animState % 2 + 4;
+        }
         
         boolean right = Gdx.input.isKeyPressed(Keys.D);
         boolean left = Gdx.input.isKeyPressed(Keys.A);
@@ -250,17 +261,24 @@ public class PlayScreen implements Screen, ContactListener {
         }
 
         if(right && vel.x < speed) {
-            animState = WALK_RIGHT;
+            if(animState < 4)
+                animState = WALK_RIGHT;
             player.applyLinearImpulse(onGround > 0 ? 2f : 1f, 0, pos.x, pos.y, true);
         }
         if(left && vel.x > -speed) {
-            animState = WALK_LEFT;
+            if(animState < 4)
+                animState = WALK_LEFT;
             player.applyLinearImpulse(onGround > 0 ? -2f : -1f, 0, pos.x, pos.y, true);
         }
         
-        if(onGround > 0 && !right && !left) {
+        if(onGround > 0 && !right && !left && animState < 4) {
             animState = animState % 2;
         }
+        
+        if(animState >= 4 && animTime > 0.2f) {
+            animState = animState % 2;
+        }
+        
         justJumped = Gdx.input.isKeyPressed(Keys.SPACE);
         world.step(delta, 8, 6);
     }
@@ -278,10 +296,14 @@ public class PlayScreen implements Screen, ContactListener {
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         //cams
-        cam.position.x = player.getPosition().x;
-        cam.position.y = player.getPosition().y;
-        levelCam.position.x = player.getPosition().x * 32;
-        levelCam.position.y = player.getPosition().y * 32;
+        float maxX = lightLayer.getWidth() - cam.viewportWidth/2;
+        float minX = cam.viewportWidth/2;
+        float maxY = lightLayer.getHeight() - cam.viewportHeight/2;
+        float minY = cam.viewportHeight/2;
+        cam.position.x = Math.min(Math.max(player.getPosition().x, minX), maxX);
+        cam.position.y = Math.min(Math.max(player.getPosition().y, minY), maxY);
+        levelCam.position.x = cam.position.x * 32;
+        levelCam.position.y = cam.position.y * 32;
         cam.update();
         bgCam.update();
         //background
@@ -299,13 +321,29 @@ public class PlayScreen implements Screen, ContactListener {
         game.batch.begin();
         float px = (animState % 2) == 0 ? player.getPosition().x-0.5f : player.getPosition().x-0.5f+1;
         int w = (animState % 2) == 0 ? 1 : -1;
-        game.batch.draw((animState < 2 ? (human ? manStand :wolfStand) :( human ?  manWalk : wolfWalk)).getKeyFrame(animTime, true), px, player.getPosition().y-0.5f, w, 1);
+        Animation a = null;
+        switch(animState) {
+            default:
+            case STAND_RIGHT:
+            case STAND_LEFT:
+                a = human ? manStand : wolfStand;
+                break;
+            case WALK_RIGHT:
+            case WALK_LEFT:
+                a = human ? manWalk : wolfWalk;
+                break;
+            case CHANGE_RIGHT:
+            case CHANGE_LEFT:
+                a = change;
+                break;
+        }
+        game.batch.draw(a.getKeyFrame(animTime, true), px, player.getPosition().y-0.5f, w, 1);
         game.batch.end();
         //light
         levelRenderer.setView(levelCam);
         levelRenderer.render(new int[] {1});
         //debug
-        b2dr.render(world, cam.combined);
+//        b2dr.render(world, cadm.combined);
     }
     
    
