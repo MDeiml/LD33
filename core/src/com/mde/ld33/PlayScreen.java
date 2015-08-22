@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import java.util.ArrayList;
 
 
 public class PlayScreen implements Screen, ContactListener {
@@ -21,11 +22,12 @@ public class PlayScreen implements Screen, ContactListener {
     private Fixture foot;
     private int onGround;
     private boolean justJumped;
+    private ArrayList<Contact> playerContacts;
     
     
     public PlayScreen(LD33 game) {
         this.game = game;
-        world = new World(new Vector2(0, -9.81f), true);
+        world = new World(new Vector2(0, -20f), true);
         world.setContactListener(this);
         cam = new OrthographicCamera(Gdx.graphics.getWidth() / 32, Gdx.graphics.getHeight()/ 32);
         b2dr = new Box2DDebugRenderer();
@@ -40,7 +42,8 @@ public class PlayScreen implements Screen, ContactListener {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(0.5f, 0.5f);
         fdef.shape = shape;
-        player.createFixture(fdef);
+        fdef.friction = 1;
+        player.createFixture(fdef).setUserData("player");
         
         shape.setAsBox(0.3f, 0.1f, new Vector2(0, -0.5f), 0);
         fdef.isSensor = true;
@@ -52,7 +55,6 @@ public class PlayScreen implements Screen, ContactListener {
         Body temp = world.createBody(bdef);
         
         fdef.isSensor = false;
-        fdef.friction = 1f;
         shape.setAsBox(5, 0.5f);
         temp.createFixture(fdef);
     }
@@ -67,19 +69,19 @@ public class PlayScreen implements Screen, ContactListener {
         boolean right = Gdx.input.isKeyPressed(Keys.D);
         boolean left = Gdx.input.isKeyPressed(Keys.A);
         
+        
         if(onGround > 0)
         {
             if(Gdx.input.isKeyPressed(Keys.SPACE) && !justJumped)
             {
                 player.applyLinearImpulse(0, 10, player.getPosition().x, player.getPosition().y, true);
             }
-
+            
             if(right || left) {
                 System.out.println("geh");
                 player.getFixtureList().get(0).setFriction(0.2f);
             }else {
-                System.out.println("steh");
-                player.getFixtureList().get(0).setFriction(100f);
+                player.getFixtureList().get(0).setFriction(3f);
             }
         }else {
             player.getFixtureList().get(0).setFriction(0);
@@ -93,7 +95,7 @@ public class PlayScreen implements Screen, ContactListener {
         if(onGround == 0) {
             if(vel.x < 0 && !left) {
                 speed = SPEED / 2;
-            }else if(!right) {
+            }else if(vel.x > 0 && !right) {
                 speed = SPEED / 2;
             }
         }
@@ -104,10 +106,10 @@ public class PlayScreen implements Screen, ContactListener {
         }
 
         if(right && vel.x < SPEED) {
-            player.applyLinearImpulse(1f, 0, pos.x, pos.y, true);
+            player.applyLinearImpulse(onGround > 0 ? 2f : 1f, 0, pos.x, pos.y, true);
         }
-        if(left && vel.y > -SPEED) {
-            player.applyLinearImpulse(-1f, 0, pos.x, pos.y, true);
+        if(left && vel.x > -SPEED) {
+            player.applyLinearImpulse(onGround > 0 ? -2f : -1f, 0, pos.x, pos.y, true);
         }
         justJumped = Gdx.input.isKeyPressed(Keys.SPACE);
         world.step(delta, 8, 6);
@@ -165,7 +167,14 @@ public class PlayScreen implements Screen, ContactListener {
     }
 
     @Override
-    public void preSolve(Contact contact, Manifold oldManifold) {}
+    public void preSolve(Contact contact, Manifold oldManifold) {
+        Fixture a = contact.getFixtureA();
+        Fixture b = contact.getFixtureB();
+        
+        if("player".equals(b.getUserData()) || "player".equals(a.getUserData())) {
+            contact.resetFriction();
+        }
+    }
 
     @Override
     public void postSolve(Contact contact, ContactImpulse impulse) {}
