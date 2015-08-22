@@ -24,6 +24,7 @@ public class PlayScreen implements Screen, ContactListener {
         cam = new OrthographicCamera(Gdx.graphics.getWidth() / 32, Gdx.graphics.getHeight()/ 32);
         b2dr = new Box2DDebugRenderer();
         unprocessed = 0;
+        onGround = 0;
         
         BodyDef bdef = new BodyDef();
         bdef.type = BodyDef.BodyType.DynamicBody;
