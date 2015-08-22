@@ -42,6 +42,15 @@ public class PlayScreen implements Screen, ContactListener {
         shape.setAsBox(0.3f, 0.1f, new Vector2(0, -0.5f), 0);
         fdef.isSensor = true;
         player.createFixture(fdef).setUserData("foot");
+        
+        //TEMP
+        bdef.type = BodyDef.BodyType.StaticBody;
+        bdef.position.set(0, -2);
+        Body temp = world.createBody(bdef);
+        
+        fdef.isSensor = false;
+        shape.setAsBox(5, 0.5f);
+        temp.createFixture(fdef);
     }
     
     @Override
