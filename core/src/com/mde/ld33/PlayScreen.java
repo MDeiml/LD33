@@ -6,9 +6,11 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import java.util.ArrayList;
 
 
 public class PlayScreen implements Screen, ContactListener {
@@ -35,6 +37,9 @@ public class PlayScreen implements Screen, ContactListener {
     private float animTime;
     private int animState;
     private boolean human;
+    private TiledMap level;
+    private TiledMapRenderer levelRenderer;
+    private OrthographicCamera levelCam;
     
     public PlayScreen(LD33 game) {
         this.game = game;
@@ -46,6 +51,9 @@ public class PlayScreen implements Screen, ContactListener {
         onGround = 0;
         animTime = 0;
         human = false;
+        level = game.assetMngr.get("level1.tmx");
+        levelRenderer = new OrthogonalTiledMapRenderer(level, game.batch);
+        levelCam = new OrthographicCamera();
         
         TextureRegion[] regs = new TextureRegion[3];
         for(int i = 0; i < 3; i++) {
@@ -178,12 +186,18 @@ public class PlayScreen implements Screen, ContactListener {
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         cam.update();
+        //level
+        levelCam.update();
+        levelRenderer.setView(levelCam);
+        levelRenderer.render();
+        //player
         game.batch.setProjectionMatrix(cam.combined);
         game.batch.begin();
         float px = (animState % 2) == 0 ? player.getPosition().x-0.5f : player.getPosition().x-0.5f+1;
         int w = (animState % 2) == 0 ? 1 : -1;
         game.batch.draw((animState < 2 ? (human ? manStand :wolfStand) :( human ?  manWalk : wolfWalk)).getKeyFrame(animTime, true), px, player.getPosition().y-0.5f, w, 1);
         game.batch.end();
+        //debug
         b2dr.render(world, cam.combined);
     }
     
@@ -193,6 +207,8 @@ public class PlayScreen implements Screen, ContactListener {
     public void resize(int width, int height) {
         cam.viewportWidth = width / 32f / 2f;
         cam.viewportHeight = height / 32f / 2f;
+        levelCam.viewportWidth = width / 2f;
+        levelCam.viewportHeight = height / 2f;
     }
 
     @Override

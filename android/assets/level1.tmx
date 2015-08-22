@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="64" height="12" tilewidth="32" tileheight="32" nextobjectid="3">
+ <properties>
+  <property name="SpawnX" value="1"/>
+  <property name="SpawnY" value="7"/>
+ </properties>
+ <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32">
+  <image source="tileset_cave.png" width="128" height="128"/>
+ </tileset>
+ <layer name="Kachelebene 1" width="64" height="12">
+  <data encoding="base64" compression="zlib">
+   eJztldEKgCAMRUUq0aj+/29TSBKZ64qVIzpwn9zGzoNq1MnoM1XGqDLcPCmk+//+9/pbH1fok8KT/hFL9EmB83dMavyp2VKg/IPffNFnwbq8PkYKuT/q8xVS/63bFv1I/YfGWYvP2jjjbcJ910dKu6Ne4f6g76EUkL8M9YrvpwYihfxfpnblzqg6JFLYAYkZBF8=
+  </data>
+ </layer>
+</map>
