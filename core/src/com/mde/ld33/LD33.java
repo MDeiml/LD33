@@ -2,8 +2,6 @@ package com.mde.ld33;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class LD33 extends Game {
@@ -14,5 +12,6 @@ public class LD33 extends Game {
     public void create () {
         batch = new SpriteBatch();
         assetMngr = new AssetManager();
+        setScreen(new PlayScreen(this));
     }
 }

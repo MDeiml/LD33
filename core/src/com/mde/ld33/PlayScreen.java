@@ -4,8 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 
 
 public class PlayScreen implements Screen {
@@ -15,13 +14,29 @@ public class PlayScreen implements Screen {
     private OrthographicCamera cam;
     private Box2DDebugRenderer b2dr;
     private float unprocessed;
+    private Body player;
+    private Fixture foot;
     
     public PlayScreen(LD33 game) {
         this.game = game;
-        world = new World(new Vector2(0, 0), true);
-        cam = new OrthographicCamera(Gdx.graphics.getWidth() / 32, Gdx.graphics.getWidth() / 32);
+        world = new World(new Vector2(0, -9.81f), true);
+        cam = new OrthographicCamera(Gdx.graphics.getWidth() / 32, Gdx.graphics.getHeight()/ 32);
         b2dr = new Box2DDebugRenderer();
         unprocessed = 0;
+        
+        BodyDef bdef = new BodyDef();
+        bdef.type = BodyDef.BodyType.DynamicBody;
+        player = world.createBody(bdef);
+        
+        FixtureDef fdef = new FixtureDef();
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(0.5f, 0.5f);
+        fdef.shape = shape;
+        player.createFixture(fdef);
+        
+        shape.setAsBox(0.3f, 0.1f, new Vector2(0, -0.5f), 0);
+        fdef.isSensor = true;
+        player.createFixture(fdef).setUserData("foot");
     }
     
     @Override
