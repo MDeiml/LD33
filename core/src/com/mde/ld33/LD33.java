@@ -46,4 +46,10 @@ public class LD33 extends Game {
 //        assetMngr.get("music.ogg", Music.class).play();
         setScreen(new MainMenuScreen(this));
     }
+    
+    @Override
+    public void dispose() {
+        assetMngr.dispose();
+        batch.dispose();
+    }
 }
