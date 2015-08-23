@@ -25,7 +25,7 @@ public class LevelsScreen implements Screen {
         table.setFillParent(true);
         stage.addActor(table);
         
-        for(int i = 1; i <= 5; i++) {
+        for(int i = 1; i <= 6; i++) {
             TextButton lb = new TextButton("Level "+i, skin);
             final int lvl = i;
             lb.addListener(new ClickListener() {

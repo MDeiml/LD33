@@ -40,6 +40,8 @@ public class PlayScreen implements Screen, ContactListener {
     private Animation manStand;
     private Animation manWalk;
     private Animation change;
+    private TextureRegion wolfJump;
+    private TextureRegion manJump;
     private float animTime;
     private float lastStep;
     private int animState;
@@ -202,7 +204,8 @@ public class PlayScreen implements Screen, ContactListener {
         }
         change = new Animation(0.100f,regs);
         
-        
+        wolfJump = new TextureRegion(game.assetMngr.get("spritesheet.png", Texture.class), 4*32, 0, 32, 32);
+        manJump = new TextureRegion(game.assetMngr.get("spritesheet.png", Texture.class), 3*32, 2*32, 32, 32);
         
         bdef.type = BodyDef.BodyType.DynamicBody;
         int sx = Integer.parseInt(level.getProperties().get("SpawnX", String.class));
@@ -230,12 +233,8 @@ public class PlayScreen implements Screen, ContactListener {
     }
     
     private void updateLight() {
-        TiledMapTileLayer layer = (TiledMapTileLayer)level.getLayers().get(0);
         TiledMapTileSet lightSet = level.getTileSets().getTileSet("light");
         int gid = (Integer)lightSet.getProperties().get("firstgid");
-        int gid1 = 0;
-        if(level.getTileSets().getTileSet("objects") != null)
-            gid1 = (Integer)level.getTileSets().getTileSet("objects").getProperties().get("firstgid");
         lightId = gid+1;
         for(int x = 0; x < lightLayer.getWidth(); x++) {
             for(int y = 0; y < lightLayer.getHeight(); y++) {
@@ -301,7 +300,7 @@ public class PlayScreen implements Screen, ContactListener {
                             addRay(x-1, y, -1, 0);
                         }
                     }
-                }else if(light && y != 0) {
+                }else if(light && y != lightLayer.getHeight()-1) {
                     if(layer.getCell(x, y).getTile().getId() != gid1+(dy == -1 ? 40 : (dx == -1 ? 42 : 10000)))
                         cell.setTile(lightSet.getTile(gid+3));
                     else
@@ -488,23 +487,29 @@ public class PlayScreen implements Screen, ContactListener {
         game.batch.begin();
         float px = (animState % 2) == 0 ? player.getPosition().x-0.5f : player.getPosition().x-0.5f+1;
         int w = (animState % 2) == 0 ? 1 : -1;
-        Animation a = null;
+        TextureRegion p;
         switch(animState) {
             default:
             case STAND_RIGHT:
             case STAND_LEFT:
-                a = human ? manStand : wolfStand;
+                if(onGround == 0)
+                    p = human ? manJump : wolfJump;
+                else
+                    p = (human ? manStand : wolfStand).getKeyFrame(animTime, true);
                 break;
             case WALK_RIGHT:
             case WALK_LEFT:
-                a = human ? manWalk : wolfWalk;
+                if(onGround == 0)
+                    p = human ? manJump : wolfJump;
+                else
+                    p = (human ? manWalk : wolfWalk).getKeyFrame(animTime, true);
                 break;
             case CHANGE_RIGHT:
             case CHANGE_LEFT:
-                a = change;
+                p = change.getKeyFrame(animTime, false);
                 break;
         }
-        game.batch.draw(a.getKeyFrame(animTime, true), px, player.getPosition().y-0.5f, w, 1);
+        game.batch.draw(p, px, player.getPosition().y-0.5f, w, 1);
         game.batch.end();
         //light
         levelRenderer.setView(levelCam);
