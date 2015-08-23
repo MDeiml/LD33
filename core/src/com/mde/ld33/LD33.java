@@ -28,6 +28,7 @@ public class LD33 extends Game {
         assetMngr.load("Jump.wav", Sound.class);
         assetMngr.load("step.wav", Sound.class);
         assetMngr.load("change.wav", Sound.class);
+        assetMngr.load("explosion.wav", Sound.class);
         assetMngr.load("skin.atlas", TextureAtlas.class);
         assetMngr.load("music.ogg", Music.class);
         assetMngr.load("startbackground.png", Texture.class);
