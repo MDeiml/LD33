@@ -1,5 +1,6 @@
 {
 	com.badlogic.gdx.graphics.g2d.BitmapFont: { default: { file: ascii.fnt } },
-	com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle : { default: { down: button-down, up: button, checked: button-down} },
-	com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle : { default: { down: button-down, up: button, checked: button-down, font: default} }
+	com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle : { default: { down: button-down, up: button, checked: button-down } },
+	com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle : { default: { down: button-down, up: button, checked: button-down, font: default } }
+	com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle : { default: { font: default } }
 }

@@ -7,17 +7,10 @@
  <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32">
   <image source="tileset_cave.png" width="128" height="128"/>
  </tileset>
-<<<<<<< HEAD
  <tileset firstgid="17" name="objects" tilewidth="32" tileheight="32" tilecount="64">
   <image source="spritesheet.png" width="256" height="256"/>
  </tileset>
  <tileset firstgid="81" name="light" tilewidth="32" tileheight="32" tilecount="4">
-=======
- <tileset firstgid="17" name="objects" tilewidth="32" tileheight="32">
-  <image source="spritesheet.png" width="256" height="256"/>
- </tileset>
- <tileset firstgid="81" name="light" tilewidth="32" tileheight="32">
->>>>>>> e2d780c211f494596631408763d9b261c1c8c3ed
   <image source="light.png" width="64" height="64"/>
  </tileset>
  <layer name="Kachelebene 1" width="50" height="30">
