@@ -4,18 +4,18 @@
   <property name="SpawnX" value="4"/>
   <property name="SpawnY" value="4"/>
  </properties>
- <tileset firstgid="1" name="tileset_cave" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="tileset_cave" tilewidth="32" tileheight="32" tilecount="16">
   <image source="tileset_cave.png" width="128" height="128"/>
  </tileset>
- <tileset firstgid="17" name="light" tilewidth="32" tileheight="32">
+ <tileset firstgid="17" name="light" tilewidth="32" tileheight="32" tilecount="4">
   <image source="light.png" width="64" height="64"/>
  </tileset>
- <tileset firstgid="21" name="objects" tilewidth="32" tileheight="32">
+ <tileset firstgid="21" name="objects" tilewidth="32" tileheight="32" tilecount="64">
   <image source="spritesheet.png" width="256" height="256"/>
  </tileset>
  <layer name="Kachelebene 1" width="30" height="50">
   <data encoding="base64" compression="zlib">
-   eJzFmFtqAzEMRU1hUuIw2U363f2vqhVUIFQ9rh+aXPDX2HPmOpIl59Zau6nx2fbqMBjVzHdy7wD3UcAlRZ4rvLI8z5VMFnnuf+NKrtS7uVXxFHFHvZ6/4yMZz2S+5sr50ZrRfLTyiLln8713Y501OF61Ii4/055Z9/Y/DyQvihErfzUX+b27GGhMas/MkX5Inu9Zac+ev6OALT1H3Oj3ruKSevK8iit1ijWzezDDtXJolD/DlfxZ9gqXpHMCZa9ySXrfEfYOruSj3ndySfKs6wFbn5U073sDP5PXV/J3fm3mcR2PaqjXN6wwkdqta/gqG7mnSOYOoV6ROm71XFmPssKTst6F5u1q/lr9VsRG+40RIWcGafd5hepqrnVuVHKJ58WzxaX5I+cF+/HWeP2+tUbHiPVuvX/Z3mV1wZLMG31HQ/M/OjPR/dX3C0TZWb2rFo1wZQxU3lMk62HMmWW/Em4Ug4fzPMszWbNkD7VyXsma6tXBrP6NcqM6bvlH4hep49l7LN9oj+N9C/pfzsyaq8YPiakQhQ==
+   eJzFmFtqAzEMRU1hUuIw3U37nf2vqhVEIFQ9rh+aXPDX2HPmOpIl59Zau6nx2fbqMBjVzHdy7wD3UcAlRZ4rvLI8z5VMFnnur3ElV+rd3Kp4irijXs+/8ZGMr2S+5sr50ZrRfLTyiLln8713Y501OF61Ii4/055Z9/Y/DyQvihErfzUX+b27GGhMas/MkX5Inu9Zac+ev6OALT1H3Oj3ruKSevK8iit1ijWzezDDtXJolD/DlfxZ9gqXpHMCZa9ySXrfEfYOruSj3ndySfKs6wFbn5U077mBn8nrK/k7fzbzuI5HNdTrG1aYSO3WNXyVjdxTJHOHUK9IHbd6rqxHWeFJWe9C83Y1f61+K2Kj/caIkDODtPu8QnU11zo3KrnE8+LZ4tL8kfOC/XhrvH7fWqNjxHq33r9s77K6YEnmjb6jofkfnZno/ur7BaLsrN5Vi0a4MgYq7ymS9TDmzLK/E24Ug4fxPMsZOYfnPQe53rfo3kR/Q1b/RrlRHbf8I/GL1PHsPZZvtMfxvgX9L2dmzVXjF33tEH8=
   </data>
  </layer>
  <objectgroup name="objectLayer">
