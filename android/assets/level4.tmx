@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="50" tilewidth="32" tileheight="32" nextobjectid="8">
+ <properties>
+  <property name="SpawnY" value="4"/>
+  <property name="SpwanX" value="4"/>
+ </properties>
  <tileset firstgid="1" name="tileset_cave" tilewidth="32" tileheight="32" tilecount="16">
   <image source="tileset_cave.png" width="128" height="128"/>
  </tileset>
