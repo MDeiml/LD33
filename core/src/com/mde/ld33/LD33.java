@@ -3,6 +3,7 @@ package com.mde.ld33;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
@@ -29,6 +30,7 @@ public class LD33 extends Game {
         assetMngr.load("step.wav", Sound.class);
         assetMngr.load("change.wav", Sound.class);
         assetMngr.load("skin.atlas", TextureAtlas.class);
+        assetMngr.load("music.ogg", Music.class);
         assetMngr.finishLoadingAsset("skin.atlas");
         assetMngr.load("skin.json", Skin.class, new SkinLoader.SkinParameter("skin.atlas"));
         
@@ -38,6 +40,7 @@ public class LD33 extends Game {
         }
         
         assetMngr.finishLoading();
-        setScreen(new PlayScreen(this, 5));
+        assetMngr.get("music.ogg", Music.class).play();
+        setScreen(new MainMenuScreen(this));
     }
 }

@@ -40,6 +40,8 @@ public class PlayScreen implements Screen, ContactListener {
     private Animation manStand;
     private Animation manWalk;
     private Animation change;
+    private TextureRegion wolfJump;
+    private TextureRegion manJump;
     private float animTime;
     private float lastStep;
     private int animState;
@@ -50,9 +52,11 @@ public class PlayScreen implements Screen, ContactListener {
     private OrthographicCamera bgCam;
     private TiledMapTileLayer lightLayer;
     private int lightId;
+    private int levelNr;
     
     public PlayScreen(LD33 game, int levelNr) {
         this.game = game;
+        this.levelNr = levelNr;
         world = new World(new Vector2(0, -20f), true);
         world.setContactListener(this);
         cam = new OrthographicCamera();
@@ -82,12 +86,19 @@ public class PlayScreen implements Screen, ContactListener {
         FixtureDef fdef = new FixtureDef();
         PolygonShape shape = new PolygonShape();
         
-        int gid1 = (Integer)level.getTileSets().getTileSet("objects").getProperties().get("firstgid");
+        int gid0 = (Integer)level.getTileSets().getTileSet(0).getProperties().get("firstgid");
+        int gid1 = 0;
+        if(level.getTileSets().getTileSet("objects") != null)
+            gid1 = (Integer)level.getTileSets().getTileSet("objects").getProperties().get("firstgid");
         TiledMapTileLayer layer = (TiledMapTileLayer)level.getLayers().get(0);
         for(int y = 0; y < layer.getHeight(); y++) {
             int start = -1;
             for(int x = 0; x < layer.getWidth(); x++) {
-                if(layer.getCell(x, y) != null && layer.getCell(x, y).getTile().getId() != gid1+43) {
+                if(layer.getCell(x, y) != null && layer.getCell(x, y).getTile().getId() != gid1+43
+                                               && layer.getCell(x, y).getTile().getId() != gid0+0
+                                               && layer.getCell(x, y).getTile().getId() != gid0+2
+                                               && layer.getCell(x, y).getTile().getId() != gid0+8
+                                               && layer.getCell(x, y).getTile().getId() != gid0+10) {
                     if(start == -1)
                         start = x;
                 }else if(start != -1) {
@@ -100,6 +111,48 @@ public class PlayScreen implements Screen, ContactListener {
                     fdef.isSensor = false;
                     b.createFixture(fdef);
                     start = -1;
+                }
+                if(layer.getCell(x, y) != null) {
+                    if(layer.getCell(x, y).getTile().getId() == gid0 + 0) {
+                        bdef.type = BodyDef.BodyType.StaticBody;
+                        bdef.position.set(x+0.5f, y+0.5f);
+                        Body b = world.createBody(bdef);
+
+                        shape.set(new float[] {-0.5f, -0.5f, 0.5f, 0.5f, 0.5f, -0.5f});
+                        fdef.shape = shape;
+                        fdef.isSensor = false;
+                        b.createFixture(fdef);
+                    }
+                    if(layer.getCell(x, y).getTile().getId() == gid0 + 2) {
+                        bdef.type = BodyDef.BodyType.StaticBody;
+                        bdef.position.set(x+0.5f, y+0.5f);
+                        Body b = world.createBody(bdef);
+
+                        shape.set(new float[] {-0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f});
+                        fdef.shape = shape;
+                        fdef.isSensor = false;
+                        b.createFixture(fdef);
+                    }
+                    if(layer.getCell(x, y).getTile().getId() == gid0 + 8) {
+                        bdef.type = BodyDef.BodyType.StaticBody;
+                        bdef.position.set(x+0.5f, y+0.5f);
+                        Body b = world.createBody(bdef);
+
+                        shape.set(new float[] {-0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f});
+                        fdef.shape = shape;
+                        fdef.isSensor = false;
+                        b.createFixture(fdef);
+                    }
+                    if(layer.getCell(x, y).getTile().getId() == gid0 + 10) {
+                        bdef.type = BodyDef.BodyType.StaticBody;
+                        bdef.position.set(x+0.5f, y+0.5f);
+                        Body b = world.createBody(bdef);
+
+                        shape.set(new float[] {-0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f});
+                        fdef.shape = shape;
+                        fdef.isSensor = false;
+                        b.createFixture(fdef);
+                    }
                 }
             }
             if(start != -1) {
@@ -151,7 +204,8 @@ public class PlayScreen implements Screen, ContactListener {
         }
         change = new Animation(0.100f,regs);
         
-        
+        wolfJump = new TextureRegion(game.assetMngr.get("spritesheet.png", Texture.class), 4*32, 0, 32, 32);
+        manJump = new TextureRegion(game.assetMngr.get("spritesheet.png", Texture.class), 3*32, 2*32, 32, 32);
         
         bdef.type = BodyDef.BodyType.DynamicBody;
         int sx = Integer.parseInt(level.getProperties().get("SpawnX", String.class));
@@ -179,10 +233,8 @@ public class PlayScreen implements Screen, ContactListener {
     }
     
     private void updateLight() {
-        TiledMapTileLayer layer = (TiledMapTileLayer)level.getLayers().get(0);
         TiledMapTileSet lightSet = level.getTileSets().getTileSet("light");
         int gid = (Integer)lightSet.getProperties().get("firstgid");
-        int gid1 = (Integer)level.getTileSets().getTileSet("objects").getProperties().get("firstgid");
         lightId = gid+1;
         for(int x = 0; x < lightLayer.getWidth(); x++) {
             for(int y = 0; y < lightLayer.getHeight(); y++) {
@@ -202,7 +254,9 @@ public class PlayScreen implements Screen, ContactListener {
         TiledMapTileLayer layer = (TiledMapTileLayer)level.getLayers().get(0);
         TiledMapTileSet lightSet = level.getTileSets().getTileSet("light");
         int gid = (Integer)lightSet.getProperties().get("firstgid");
-        int gid1 = (Integer)level.getTileSets().getTileSet("objects").getProperties().get("firstgid");
+        int gid1 = 0;
+        if(level.getTileSets().getTileSet("objects") != null)
+            gid1 = (Integer)level.getTileSets().getTileSet("objects").getProperties().get("firstgid");
         boolean light = true;
         while(light && x >= 0 && y >= 0 && x < lightLayer.getWidth() && y < lightLayer.getHeight()) {
             TiledMapTileLayer.Cell cell = lightLayer.getCell(x, y);
@@ -246,7 +300,7 @@ public class PlayScreen implements Screen, ContactListener {
                             addRay(x-1, y, -1, 0);
                         }
                     }
-                }else if(light && y != 0) {
+                }else if(light && y != lightLayer.getHeight()-1) {
                     if(layer.getCell(x, y).getTile().getId() != gid1+(dy == -1 ? 40 : (dx == -1 ? 42 : 10000)))
                         cell.setTile(lightSet.getTile(gid+3));
                     else
@@ -390,6 +444,9 @@ public class PlayScreen implements Screen, ContactListener {
         
         justJumped = jump;
         world.step(delta, 8, 6);
+        
+        if(player.getPosition().x > lightLayer.getWidth()-1)
+            game.setScreen(new PlayScreen(game, levelNr+1));
     }
 
     @Override
@@ -430,23 +487,29 @@ public class PlayScreen implements Screen, ContactListener {
         game.batch.begin();
         float px = (animState % 2) == 0 ? player.getPosition().x-0.5f : player.getPosition().x-0.5f+1;
         int w = (animState % 2) == 0 ? 1 : -1;
-        Animation a = null;
+        TextureRegion p;
         switch(animState) {
             default:
             case STAND_RIGHT:
             case STAND_LEFT:
-                a = human ? manStand : wolfStand;
+                if(onGround == 0)
+                    p = human ? manJump : wolfJump;
+                else
+                    p = (human ? manStand : wolfStand).getKeyFrame(animTime, true);
                 break;
             case WALK_RIGHT:
             case WALK_LEFT:
-                a = human ? manWalk : wolfWalk;
+                if(onGround == 0)
+                    p = human ? manJump : wolfJump;
+                else
+                    p = (human ? manWalk : wolfWalk).getKeyFrame(animTime, true);
                 break;
             case CHANGE_RIGHT:
             case CHANGE_LEFT:
-                a = change;
+                p = change.getKeyFrame(animTime, false);
                 break;
         }
-        game.batch.draw(a.getKeyFrame(animTime, true), px, player.getPosition().y-0.5f, w, 1);
+        game.batch.draw(p, px, player.getPosition().y-0.5f, w, 1);
         game.batch.end();
         //light
         levelRenderer.setView(levelCam);
