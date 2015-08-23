@@ -15,7 +15,7 @@
  </tileset>
  <layer name="Kachelebene 1" width="40" height="30">
   <data encoding="base64" compression="zlib">
-   eJztl10KwzAMg81g2W93m8Eed/9TdYUFOuPWdiOtK0ygl6aUD8lJaBGRMvJB8Nq/XQBm8J1AbCy+yojIkMUnG+CTDfC1ZsjmG+bwrPxLfJYymf75PvVM8l2ILN3LO+W1Zq+y3EbPWu8RJF/dp7qP7H61+O5ATq2HtJ2BupOIrC7n1MJndeLJ6vLovL/2/F2d9UyG9Z6J5JbtspUvm1m2S+87c0Z16nW5VEPGHh+qzyWK8E2ds99QhI8l6y6euputNXafiH8RFmcHYGNyov7VWZwsPj2vS1jR3aIzZWfnZRo9M6LuAeWuDa0=
+   eJztl9sKwjAQRBfBeK1/I/jo/3+VFhqIYetmuzPGQgfmJS3lMJNLk0QkFT4IXvvJCWAG3wnExuLLjIgMWXyyAj5ZAV80QzbfOA/Plf+JT5Mn043vU08n34XIMry9q9xr7mWWWzEWPUeQfHmd1n1416vGdwdy1npIbA+sO2mR1uU3Rfi0TixpXR6N93vPv6vx3JNhPmdacvN2GeXzZubt0vqOZUSnVpcRWXyoPpfK4pvbZ3+lHv8ro7SzWHOaGWf3ibiLsDgHABuTE3VXZ3Gy+ErOpazobtGZsrOzMm3ZLzx+AZsSDZ4=
   </data>
  </layer>
  <objectgroup name="objectLayer">
