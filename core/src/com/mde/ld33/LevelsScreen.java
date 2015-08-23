@@ -2,7 +2,7 @@ package com.mde.ld33;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -14,9 +14,11 @@ public class LevelsScreen implements Screen {
     
     private LD33 game;
     private Stage stage;
+    private Camera bgCam;
     
     public LevelsScreen(LD33 game, final Screen before) {
         this.game = game;
+        bgCam = new OrthographicCamera(1, 1);
         stage = new Stage(new FitViewport(400, 300));
         
         Skin skin = game.assetMngr.get("skin.json", Skin.class);
@@ -25,7 +27,7 @@ public class LevelsScreen implements Screen {
         table.setFillParent(true);
         stage.addActor(table);
         
-        for(int i = 1; i <= 6; i++) {
+        for(int i = 1; i <= 7; i++) {
             TextButton lb = new TextButton("Level "+i, skin);
             final int lvl = i;
             lb.addListener(new ClickListener() {
@@ -40,6 +42,7 @@ public class LevelsScreen implements Screen {
         }
         table.row();
         
+        table.add();
         table.add();
         table.add();
         
@@ -64,6 +67,10 @@ public class LevelsScreen implements Screen {
     public void render(float delta) {
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        game.batch.setProjectionMatrix(bgCam.combined);
+        game.batch.begin();
+        game.batch.draw(game.assetMngr.get("startbackground.png", Texture.class), -0.5f, -0.5f, 1, 1);
+        game.batch.end();
         stage.act(delta);
         stage.draw();
     }
