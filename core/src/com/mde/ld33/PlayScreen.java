@@ -286,7 +286,8 @@ public class PlayScreen implements Screen, ContactListener {
             cell.setRotation(r);
             if(layer.getCell(x, y) != null && layer.getCell(x, y).getTile().getId() != gid1+(dx == 0 ? 42 : 40)
                                            && layer.getCell(x, y).getTile().getId() != gid1+43
-                                           && layer.getCell(x, y).getTile().getId() != gid1+44) {
+                                           && layer.getCell(x, y).getTile().getId() != gid1+44
+                                           && layer.getCell(x, y).getTile().getId() != gid1+48) {
                 int tid = layer.getCell(x, y).getTile().getId();
                 if(tid >= gid1+32 && tid <= gid1+35) {
                     cell.setTile(lightSet.getTile(gid+1));

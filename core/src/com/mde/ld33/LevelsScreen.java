@@ -27,7 +27,7 @@ public class LevelsScreen implements Screen {
         table.setFillParent(true);
         stage.addActor(table);
         
-        for(int i = 1; i <= 7; i++) {
+        for(int i = 1; i <= 8; i++) {
             TextButton lb = new TextButton("Level "+i, skin);
             final int lvl = i;
             lb.addListener(new ClickListener() {
@@ -77,7 +77,7 @@ public class LevelsScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        
+        stage.getViewport().update(width, height);
     }
 
     @Override
