@@ -5,14 +5,15 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class PlayScreen implements Screen, ContactListener {
@@ -53,6 +54,8 @@ public class PlayScreen implements Screen, ContactListener {
     private TiledMapTileLayer lightLayer;
     private int lightId;
     private int levelNr;
+    private ArrayList<String> monolog;
+    private float monologTimer = 0;
     
     public PlayScreen(LD33 game, int levelNr) {
         this.game = game;
@@ -65,6 +68,8 @@ public class PlayScreen implements Screen, ContactListener {
         onGround = 0;
         animTime = 0;
         lastStep = 0;
+        monologTimer = 0;
+        monolog = new ArrayList<String>();
         human = true;
         game.assetMngr.load("level"+levelNr+".tmx", TiledMap.class);
         game.assetMngr.finishLoadingAsset("level"+levelNr+".tmx");
@@ -95,6 +100,8 @@ public class PlayScreen implements Screen, ContactListener {
             int start = -1;
             for(int x = 0; x < layer.getWidth(); x++) {
                 if(layer.getCell(x, y) != null && layer.getCell(x, y).getTile().getId() != gid1+43
+                                               && (layer.getCell(x, y).getTile().getId() < gid1+32
+                                               || layer.getCell(x, y).getTile().getId()  > gid1+34)
                                                && layer.getCell(x, y).getTile().getId() != gid0+0
                                                && layer.getCell(x, y).getTile().getId() != gid0+2
                                                && layer.getCell(x, y).getTile().getId() != gid0+8
@@ -223,13 +230,15 @@ public class PlayScreen implements Screen, ContactListener {
         fdef.isSensor = true;
         player.createFixture(fdef).setUserData("foot");
         
-        bdef.type = BodyDef.BodyType.StaticBody;
-        bdef.position.set(0, -2);
-        Body temp = world.createBody(bdef);
-        
-        fdef.isSensor = false;
-        shape.setAsBox(5, 0.5f);
-        temp.createFixture(fdef);
+        if(levelNr == 1) {
+            playerSay(new String[] {"Finally I'm free!", "After 10,000 years of being imprisoned..."
+                                   ,"Man that was boring!"});
+        }
+    }
+    
+    private void playerSay(String[] texts) {
+        monolog.addAll(Arrays.asList(texts));
+        monologTimer = 2;
     }
     
     private void updateLight() {
@@ -324,7 +333,26 @@ public class PlayScreen implements Screen, ContactListener {
         
     }
     
+    private int monologCounter = 0;
+    
     public void update(float delta) {
+        
+        if(monologCounter == 0 && levelNr == 1 && player.getPosition().x > 12) {
+            monologCounter++;
+            playerSay(new String[] {"That next jump looks difficult.", "Maybe my werewolf form is\nable to jump high enough..."});
+        }
+        if(monologCounter == 0 && levelNr == 3 && player.getPosition().x > 22) {
+            monologCounter++;
+            playerSay(new String[] {"I need to be a werewolf to make this jump.", "I should try to open that trapdoor up there."});
+        }
+        if(monologCounter == 0 && levelNr == 4 && player.getPosition().x > 18) {
+            monologCounter++;
+            playerSay(new String[] {"That mirror is pointing in the wrong direction."});
+        }
+        if(monologCounter == 0 && levelNr == 4 && player.getPosition().y > 10) {
+            monologCounter++;
+            playerSay(new String[] {"I can't switch that lever as a wolf!"});
+        }
         
         boolean h = lightLayer.getCell((int)player.getPosition().x, (int)player.getPosition().y).getTile().getId() != lightId;
         
@@ -462,6 +490,7 @@ public class PlayScreen implements Screen, ContactListener {
         }
         
         animTime += delta;
+        monologTimer = Math.max(monologTimer-delta, 0);
         
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -470,8 +499,8 @@ public class PlayScreen implements Screen, ContactListener {
         float minX = cam.viewportWidth/2;
         float maxY = lightLayer.getHeight() - cam.viewportHeight/2;
         float minY = cam.viewportHeight/2;
-        cam.position.x = Math.min(Math.max(player.getPosition().x, minX), maxX);
-        cam.position.y = Math.min(Math.max(player.getPosition().y, minY), maxY);
+        cam.position.x = Math.max(Math.min(player.getPosition().x, maxX), minX);
+        cam.position.y = Math.max(Math.min(player.getPosition().y, maxY), minY);
         levelCam.position.x = cam.position.x * 32;
         levelCam.position.y = cam.position.y * 32;
         cam.update();
@@ -520,6 +549,19 @@ public class PlayScreen implements Screen, ContactListener {
         levelRenderer.render(new int[] {2});
         //debug
         b2dr.render(world, cam.combined);
+        //monologs
+        if(monologTimer <= 0 && !monolog.isEmpty()) {
+            monolog.remove(0);
+            monologTimer = 2f;
+        }
+        if(!monolog.isEmpty()) {
+            game.batch.begin();
+            GlyphLayout gl = new GlyphLayout(game.assetMngr.get("ascii.fnt", BitmapFont.class), monolog.get(0));
+            float px1 = player.getPosition().x * 32;
+            float py1 = (player.getPosition().y+1) * 32;
+            game.assetMngr.get("ascii.fnt", BitmapFont.class).draw(game.batch, gl, px1-gl.width/2, py1+gl.height);
+            game.batch.end();
+        }
     }
     
    

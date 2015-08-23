@@ -8,8 +8,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -32,6 +31,7 @@ public class LD33 extends Game {
         assetMngr.load("skin.atlas", TextureAtlas.class);
         assetMngr.load("music.ogg", Music.class);
         assetMngr.load("startbackground.png", Texture.class);
+        assetMngr.load("ascii.fnt", BitmapFont.class);
         assetMngr.finishLoadingAsset("skin.atlas");
         assetMngr.load("skin.json", Skin.class, new SkinLoader.SkinParameter("skin.atlas"));
         
@@ -41,8 +41,8 @@ public class LD33 extends Game {
         }
         
         assetMngr.finishLoading();
-        assetMngr.get("music.ogg", Music.class).setLooping(true);
-        assetMngr.get("music.ogg", Music.class).play();
+//        assetMngr.get("music.ogg", Music.class).setLooping(true);
+//        assetMngr.get("music.ogg", Music.class).play();
         setScreen(new MainMenuScreen(this));
     }
 }
