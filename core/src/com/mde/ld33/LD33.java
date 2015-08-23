@@ -38,6 +38,6 @@ public class LD33 extends Game {
         }
         
         assetMngr.finishLoading();
-        setScreen(new PlayScreen(this, 5));
+        setScreen(new MainMenuScreen(this));
     }
 }
