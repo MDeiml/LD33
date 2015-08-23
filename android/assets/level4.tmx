@@ -15,7 +15,7 @@
  </tileset>
  <layer name="Kachelebene 1" width="30" height="50">
   <data encoding="base64" compression="zlib">
-   eJzFmOtqwzAMhc0gHXXJ3mb73fd/qs1QgdB0ObKt9IB+xennk1iX9NZau4n4bHt1KIxq5ju5d4D7KOAOeZ4rvJIsz5VM0vDcX3Ell+vd3Krz5HGzXs+/+AjiK1gvuXy9d082H7U8Iu7ZbO9duU8LOq9SHpeuSc+ke/ufB5znnREtfyUXed+dBXompWficD9Dlu9ZSc+Wv6OAzT17XO99V3GHenC9ist1sntmn8EMV8uhLH+Gy/mz7BXukMwJlL3KHZLPHWHv4HI+6n0nd4jXuu6wZa0c654b+JGsuZL2+bOZR33c66HW3LDCRHq37OGrbOQ7hTN3CPWK9HFt5opmlMws5kn7LTRvV/NXm7c8NjpvZITUjKHd9QrV1VytblRyB886zzu45Md6t9a8P1sT+fNDZsCoL2R4mfrm1UyLzetUF4EqqtW7elGGy89A5XcKZz2UNbPs74DrncFDuR7lDF9D655JrrUXOZvIPSD9L8P1+rjmHzm/SB+Pfkfzjc441l7Q/3Jm7rkqfgGamxAu
+   eJzFmFtqAzEMRU1hUuIw2U363f2vqhVUIFQ9rh+aXPDX2HPmOpIl59Zau6nx2fbqMBjVzHdy7wD3UcAlRZ4rvLI8z5VMFnnuf+NKrtS7uVXxFHFHvZ6/4yMZz2S+5sr50ZrRfLTyiLln8713Y501OF61Ii4/055Z9/Y/DyQvihErfzUX+b27GGhMas/MkX5Inu9Zac+ev6OALT1H3Oj3ruKSevK8iit1ijWzezDDtXJolD/DlfxZ9gqXpHMCZa9ySXrfEfYOruSj3ndySfKs6wFbn5U073sDP5PXV/J3fm3mcR2PaqjXN6wwkdqta/gqG7mnSOYOoV6ROm71XFmPssKTst6F5u1q/lr9VsRG+40RIWcGafd5hepqrnVuVHKJ58WzxaX5I+cF+/HWeP2+tUbHiPVuvX/Z3mV1wZLMG31HQ/M/OjPR/dX3C0TZWb2rFo1wZQxU3lMk62HMmWW/Em4Ug4fzPMszWbNkD7VyXsma6tXBrP6NcqM6bvlH4hep49l7LN9oj+N9C/pfzsyaq8YPiakQhQ==
   </data>
  </layer>
  <objectgroup name="objectLayer">
