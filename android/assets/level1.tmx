@@ -4,15 +4,15 @@
   <property name="SpawnX" value="1"/>
   <property name="SpawnY" value="3"/>
  </properties>
- <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32" tilecount="16">
   <image source="tileset_cave.png" width="128" height="128"/>
  </tileset>
- <tileset firstgid="17" name="light" tilewidth="32" tileheight="32">
+ <tileset firstgid="17" name="light" tilewidth="32" tileheight="32" tilecount="4">
   <image source="light.png" width="64" height="64"/>
  </tileset>
  <layer name="Kachelebene 1" width="64" height="12">
   <data encoding="base64" compression="zlib">
-   eJztldEKgCAMRUUo0aj+/29TSBKZ6wqmIzxwn9pkR1ga9bD4rJUxqgx3nhTS+ad/W3/r4wp9UvjSP2KJPilw/o5JjT91thQo/+C3vfRZsC6vj5FC7o/6/IXU/xw2xTjQ/UXYfY6G5/Ug7Lu+U5od9Qr70/I+e4C8ZahX/H9qIFLI32VqVu4bVYdEChd5SQRb
+   eJzdVdEKgCAMjKAio/r/v60gaYxt3sxBdHAvOXd3mjp1D4aTo5NTp6Omn9V7FzRSQ40v5U83Ecyk3rsekfmzL2/uBcxd0kW0I/NTP616eVHaAyt/Muj1jPR+u+8WtP9Byo94mcE6Xu851xHgPnj+yD34Imh+6X35O1reOevJLbBemlPTg+I67/1NrQ+qcZ0fz3qW6gdBl8/xanIg7w+qke/PHuRI6qX1lXQj82verTGprpaILv+GetN4APQZCGQ=
   </data>
  </layer>
 </map>
