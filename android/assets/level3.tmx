@@ -4,25 +4,18 @@
   <property name="SpawnX" value="1"/>
   <property name="SpawnY" value="3"/>
  </properties>
- <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32" tilecount="16">
   <image source="tileset_cave.png" width="128" height="128"/>
  </tileset>
-<<<<<<< HEAD
  <tileset firstgid="17" name="objects" tilewidth="32" tileheight="32" tilecount="64">
   <image source="spritesheet.png" width="256" height="256"/>
  </tileset>
  <tileset firstgid="81" name="light" tilewidth="32" tileheight="32" tilecount="4">
-=======
- <tileset firstgid="17" name="objects" tilewidth="32" tileheight="32">
-  <image source="spritesheet.png" width="256" height="256"/>
- </tileset>
- <tileset firstgid="81" name="light" tilewidth="32" tileheight="32">
->>>>>>> e2d780c211f494596631408763d9b261c1c8c3ed
   <image source="light.png" width="64" height="64"/>
  </tileset>
  <layer name="Kachelebene 1" width="50" height="30">
   <data encoding="base64" compression="zlib">
-   eJztl+EKwyAMhLOOdXTSvc9g7/9cqz+EcksTGyNa8OB+rB0hH9aczkQ0gwPxWja/Ch0MtbC/HB8xtFRkvjpDUlo/jeHZqsGT0tbmKhxRDxocObptnsB3h7ooLw6u38mxrsbuxSHV8aorrakXx5LBgrmXW5ebrdib5/6Q8rgkh7i6WG/Mq740OPrS4OhL2sxPufNu1SCjL/yOmS+tBT7jWFbiuTn2lfizS/zfR3gv2evsgBllydygvM+xdO+1nEv3XJi5Wi5zHGfu9yhtv9SS51kmSuLo+b6OqnHWa6HcPZ7mS08zeS/LrPKQZe5K87hVjpfMXSnDj1zrO/Lm8GC1fgvD//4B3RUOjg==
+   eJztl+EKwyAMhLOOdXSyvc9g7/9cqz+EckSTaqgRPLgfpSX4kZrTlYhWcCBe2+5Xo0NFLVyfxjmGnorMozMkpf5JDM9eCzwpqTejcEQ9aHJodNu9gO8GdVFWHNx6F8O6ErsVR6mOVd1ST604NgUL5p62LjdbcW2W+6OUxy05xNXFenNe+dLk8KXJ4UvSzE+58+m1QEY/eI6Zr8mtZI7lTfx5hGPPfRu/+wq18KwjnX3O/lOYUTWZG4T3GpfuvjXn0iMXZq6UyxzHmfs9itsfV+wT5Gy9U5f65/m+jsr1cySGKO0eT/PF00w+qmZWWUg7d7XuleMtc1fKcU2+eeZo4az11Qyj+A/eWQ6M
   </data>
  </layer>
  <objectgroup name="objectLayer">

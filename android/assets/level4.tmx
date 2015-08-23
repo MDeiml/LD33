@@ -4,18 +4,18 @@
   <property name="SpawnX" value="4"/>
   <property name="SpawnY" value="4"/>
  </properties>
- <tileset firstgid="1" name="tileset_cave" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="tileset_cave" tilewidth="32" tileheight="32" tilecount="16">
   <image source="tileset_cave.png" width="128" height="128"/>
  </tileset>
- <tileset firstgid="17" name="light" tilewidth="32" tileheight="32">
+ <tileset firstgid="17" name="light" tilewidth="32" tileheight="32" tilecount="4">
   <image source="light.png" width="64" height="64"/>
  </tileset>
- <tileset firstgid="21" name="objects" tilewidth="32" tileheight="32">
+ <tileset firstgid="21" name="objects" tilewidth="32" tileheight="32" tilecount="64">
   <image source="spritesheet.png" width="256" height="256"/>
  </tileset>
  <layer name="Kachelebene 1" width="30" height="50">
   <data encoding="base64" compression="zlib">
-   eJzFmF1qAzEMhE1hU+Lg3qZ9zv1P1QoiEKp+xl5rM+CHsHa+HUey5Nxaazc1PtteHQajmvlO7h3gPgq4pMhzhVeW57mSySLP/TWu5Eq9m1sVTxF31uv4Gx/J+Erma66cH62ZzUcrj5g7mu+9G+uswfGqFXH5mfbMurf/eSB5UYxY+au5yO/dxUBjUntmjvRD8nyvSnv2/B0FbOk54ka/dxWX1JPnVVypIdas7sEK18qhWf4KV/JX2We4JJ0TKPssl6T3HWHv4Eo+6n0nlyTPuh6w9VlJ854b+Jm8vpLf82czj+t4VEO9vuEME6nduobPsof6jNxTJJNFMYPW2GHMRbhIHbd6rmhPovvRTN/Qmt3roHl7Nn+tfmvG945zA+23dp9XqK7mWudGJZd4Xs9vcWn+zHnBfrw1Xr9vrdFnlfXdev+yvcvqgiWZN/qOhuZ/dHah+6vvF4iyM3NXLZrhyhiovKdI1sOYs8r+TrhRDB7G8yxn5Bye95zkeu+iexP9DhxzUQzNcKOexfKPxC9Sx7PvsXyjPY73Luh/OStrrhq/sMwQnQ==
+   eJzFmN1qwzAMhc0gHU3J3ma77vs/1SaoQJxJ8rFjpQd8UWLnsxz9ubfW2g3GZ1urzWFUM9/JvRPcRwFXlNlcYasqsrmSqRKb99e4kmv1bm6VP2XcUVuPv/HRGV+d+ci187M1o/HoxZFyjxbbvjvrvKH+isq4+gxtVt3b/ziwvMxHvPhFLvO9dzNYn0SblWPtEUV2zwptjuzbCtjW5oybfe8qrmjvPK/iWh1mzewZzHAxhjAvVXEt3/rlCPsMV4QxwbLPckV47gx7Bdfy2W++kiuyuW5P2JgrZd5zAb+nqK/Uff4s5mkdz2po1DecYTK1G2v4KPuA38w9xTJV4jNsjT2cuQyXqeNez5WdSXY/GukbWvN7HTZuz8av12+N2L0ib7D91up8xepqrpc3KrnCi3p+jyvzR/KF2hOtifp9bw3mKu/deH69s+vVBU82bvCOxsZ/lrvY88X7BaNezlxVi0a41gcq7ymW9XDmzLK/O9zMBzfneS9m7Byd9xzkRnvB3gT3oD6HPjObr7KexbOf8V+mjvfe49nN9jjRXtj/cmbWXDV+AT6MEJE=
   </data>
  </layer>
  <objectgroup name="objectLayer">

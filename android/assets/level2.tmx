@@ -4,15 +4,15 @@
   <property name="SpawnX" value="2"/>
   <property name="SpawnY" value="4"/>
  </properties>
- <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32" tilecount="16">
   <image source="tileset_cave.png" width="128" height="128"/>
  </tileset>
- <tileset firstgid="17" name="light" tilewidth="32" tileheight="32">
+ <tileset firstgid="17" name="light" tilewidth="32" tileheight="32" tilecount="4">
   <image source="light.png" width="64" height="64"/>
  </tileset>
  <layer name="Kachelebene 1" width="50" height="30">
   <data encoding="base64" compression="zlib">
-   eJzVV10LgzAMDIM53HD7//928+EgdEl61bTqQcCXxl6+Lp1EZCLtGVgE1r+2Rwef6z1fFb8M5oZ/Mv+7N3LIxix2Ttn7Axl5PQOi/GbV0ChYtXWFHFj4yPU5ACN5LD97d/I9MheI2c2xPRxH1xSrIRGvRf5jgHNZ+da149URwyWamdH5jJwsyp8U39ZdLC1kZ36k5XvrVfsGj541y+wlrXqocwEeiHGvGbXC41KLX1k7R2NLn4DDmXYXr+c9HisH5q1xBKL+6FnT2Yj6PXvOWNqVoeMranOr57+ekhc39l1Y9nUUW48zdI+d7y27Rq2uvJ6eibMetI57M8/yXeOh38bsfoP7ZOind69WHogdE6cS5Y6UpSmILzs/NY8zAjln6pDlAS1vmVs40ytWekdi/4GabbkTW99bUO6l0fy03ltbePTIh6V1jIYcbV5cr2CeJlj2BWYODgQ=
+   eJzVWNEKwzAIlMI6upHt//9264MQ0qhnYkJ6IOxhMd5p1G0noh20l2Ia+DvoPac9AZ8efxz/2/CL4HDcidz3cMRvad2Cg+S8evRCeFh5XQFafqNqaBZqOblDDmr40v05MGbySH/7DPI9Mxfc8zfBejjOrilrhiC8El014PNR+c5rR6oji4vVM7XzETlJhS/uiVIsPXNQm4G99cq+cx4jaxaZ5955mOi6N/LnUT3qhMTF0o/f2MjYPGjhwfW/0u4ivXmJR143q0HKyUp1g0B779F9pja7Iub4CatvzbyrRzfP78L8XWvaSpx57qH93aOhxUN609ZeoWmbz3Gp59XiQnjUdLL6qsQloie38GDtEJ1KlDtS1Ex50FVbrbZG7z+9QHXy8GjZR8r9Nxock+eOcpcddQYFa6Tt6zVr6fMjeSDzwjKE99Z4psX36ub5f/sHuKkNrA==
   </data>
  </layer>
  <objectgroup name="objectLayer"/>
