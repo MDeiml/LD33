@@ -33,11 +33,11 @@ public class LD33 extends Game {
         assetMngr.load("skin.json", Skin.class, new SkinLoader.SkinParameter("skin.atlas"));
         
         for(Controller c : Controllers.getControllers()) {
-            if(c.getName().toLowerCase().contains("xbox") && c.getName().toLowerCase().contains("360"))
+            if(c.getName().toLowerCase().contains("xbox") && c.getName().contains("360"))
                 controller = c;
         }
         
         assetMngr.finishLoading();
-        setScreen(new PlayScreen(this, 3));
+        setScreen(new PlayScreen(this, 5));
     }
 }

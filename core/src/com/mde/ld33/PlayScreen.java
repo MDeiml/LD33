@@ -87,8 +87,8 @@ public class PlayScreen implements Screen, ContactListener {
         for(int y = 0; y < layer.getHeight(); y++) {
             int start = -1;
             for(int x = 0; x < layer.getWidth(); x++) {
-                if(layer.getCell(x, y) != null) {
-                    if(start == -1 && layer.getCell(x, y).getTile().getId() != gid1+43)
+                if(layer.getCell(x, y) != null && layer.getCell(x, y).getTile().getId() != gid1+43) {
+                    if(start == -1)
                         start = x;
                 }else if(start != -1) {
                     bdef.type = BodyDef.BodyType.StaticBody;
@@ -159,7 +159,7 @@ public class PlayScreen implements Screen, ContactListener {
         bdef.position.set(sx + 0.6f, sy + 0.5f);
         player = world.createBody(bdef);
         
-        shape.setAsBox(0.5f, 0.45f);
+        shape.setAsBox(0.45f, 0.45f);
         fdef.isSensor = false;
         fdef.shape = shape;
         fdef.friction = 1;
@@ -185,27 +185,81 @@ public class PlayScreen implements Screen, ContactListener {
         int gid1 = (Integer)level.getTileSets().getTileSet("objects").getProperties().get("firstgid");
         lightId = gid+1;
         for(int x = 0; x < lightLayer.getWidth(); x++) {
-            boolean light = true;
-            for(int y = lightLayer.getHeight()-1; y >= 0; y--) {
+            for(int y = 0; y < lightLayer.getHeight(); y++) {
                 if(lightLayer.getCell(x, y) == null) {
                     lightLayer.setCell(x, y, new TiledMapTileLayer.Cell());
                 }
-                if(layer.getCell(x, y) != null && layer.getCell(x, y).getTile().getId() != gid1+42) {
-                    if(light && y != 0) {
-                        if(layer.getCell(x, y).getTile().getId() != gid1+40)
-                            lightLayer.getCell(x, y).setTile(lightSet.getTile(gid+3));
-                        else
-                            lightLayer.getCell(x, y).setTile(lightSet.getTile(gid+1));
-                    }else {
-                        lightLayer.getCell(x, y).setTile(lightSet.getTile(gid+0));
-                    }
-                    light = false;
-                }else if(light) {
-                    lightLayer.getCell(x, y).setTile(lightSet.getTile(gid+1));
-                }else {
-                    lightLayer.getCell(x, y).setTile(lightSet.getTile(gid+0));
-                }
+                lightLayer.getCell(x, y).setRotation(0);
+                lightLayer.getCell(x, y).setTile(lightSet.getTile(gid));
             }
+        }
+        for(int x = 0; x < lightLayer.getWidth(); x++) {
+            addRay(x, lightLayer.getHeight()-1, 0, -1);
+        }
+    }
+    
+    private void addRay(int x, int y, int dx, int dy) {
+        TiledMapTileLayer layer = (TiledMapTileLayer)level.getLayers().get(0);
+        TiledMapTileSet lightSet = level.getTileSets().getTileSet("light");
+        int gid = (Integer)lightSet.getProperties().get("firstgid");
+        int gid1 = (Integer)level.getTileSets().getTileSet("objects").getProperties().get("firstgid");
+        boolean light = true;
+        while(light && x >= 0 && y >= 0 && x < lightLayer.getWidth() && y < lightLayer.getHeight()) {
+            TiledMapTileLayer.Cell cell = lightLayer.getCell(x, y);
+            int r;
+            if(dx == 1) {
+                r = TiledMapTileLayer.Cell.ROTATE_90;
+            }else if(dx == -1) {
+                r = TiledMapTileLayer.Cell.ROTATE_270;
+            }else if(dy == 1) {
+                r = TiledMapTileLayer.Cell.ROTATE_180;
+            }else {
+                r = TiledMapTileLayer.Cell.ROTATE_0;
+            }
+            cell.setRotation(r);
+            if(layer.getCell(x, y) != null && layer.getCell(x, y).getTile().getId() != gid1+(dx == 0 ? 42 : 40)) {
+                int tid = layer.getCell(x, y).getTile().getId();
+                if(tid >= gid1+32 && tid <= gid1+35) {
+                    cell.setTile(lightSet.getTile(gid+1));
+                    if(dx == 1) {
+                        if(tid == gid1 + 33) {
+                            addRay(x, y+1, 0, 1);
+                        }else if(tid == gid1+34) {
+                            addRay(x, y-1, 0, -1);
+                        }
+                    }else if(dx == -1) {
+                        if(tid == gid1 + 32) {
+                            addRay(x, y+1, 0, 1);
+                        }else if(tid == gid1+35) {
+                            addRay(x, y-1, 0, -1);
+                        }
+                    }else if(dy == -1) {
+                        if(tid == gid1 + 32) {
+                            addRay(x+1, y, 1, 0);
+                        }else if(tid == gid1+33) {
+                            addRay(x-1, y, -1, 0);
+                        }
+                    }else if(dy == 1) {
+                        if(tid == gid1 + 35) {
+                            addRay(x+1, y, 1, 0);
+                        }else if(tid == gid1+34) {
+                            addRay(x-1, y, -1, 0);
+                        }
+                    }
+                }else if(light && y != 0) {
+                    if(layer.getCell(x, y).getTile().getId() != gid1+(dy == -1 ? 40 : (dx == -1 ? 42 : 10000)))
+                        cell.setTile(lightSet.getTile(gid+3));
+                    else
+                        cell.setTile(lightSet.getTile(gid+1));
+                }else {
+                    cell.setTile(lightSet.getTile(gid+0));
+                }
+                light = false;
+            }else {
+                cell.setTile(lightSet.getTile(gid+1));
+            }
+            x += dx;
+            y += dy;
         }
     }
     
@@ -243,7 +297,28 @@ public class PlayScreen implements Screen, ContactListener {
                     }
                 }
                 int lever = cell.getTile().getId();
-                layer.getCell(tx, ty).setTile(level.getTileSets().getTile(lever == gid1+43 ? gid1+42 : gid1+40));
+                int tid = layer.getCell(tx, ty).getTile().getId()-gid1;
+                int tid1 = tid;
+                switch(tid) {
+                    case 40:
+                        tid1 = 42;
+                        break;
+                    case 42:
+                        tid1 = 40;
+                        break;
+                    case 32:
+                        tid1 = 33;
+                        break;
+                    case 33:
+                        tid1 = 32;
+                        break;
+                    case 34:
+                        tid1 = 35;
+                        break;
+                    case 35:
+                        tid1 = 34;
+                }
+                layer.getCell(tx, ty).setTile(level.getTileSets().getTile(tid1+gid1));
                 cell.setTile(level.getTileSets().getTile(lever == gid1+43 ? gid1+44 : gid1+43));
                 updateLight();
             }
@@ -377,7 +452,7 @@ public class PlayScreen implements Screen, ContactListener {
         levelRenderer.setView(levelCam);
         levelRenderer.render(new int[] {2});
         //debug
-//        b2dr.render(world, cadm.combined);
+        b2dr.render(world, cam.combined);
     }
     
    
