@@ -271,7 +271,9 @@ public class PlayScreen implements Screen, ContactListener {
                 r = TiledMapTileLayer.Cell.ROTATE_0;
             }
             cell.setRotation(r);
-            if(layer.getCell(x, y) != null && layer.getCell(x, y).getTile().getId() != gid1+(dx == 0 ? 42 : 40)) {
+            if(layer.getCell(x, y) != null && layer.getCell(x, y).getTile().getId() != gid1+(dx == 0 ? 42 : 40)
+                                           && layer.getCell(x, y).getTile().getId() != gid1+43
+                                           && layer.getCell(x, y).getTile().getId() != gid1+44) {
                 int tid = layer.getCell(x, y).getTile().getId();
                 if(tid >= gid1+32 && tid <= gid1+35) {
                     cell.setTile(lightSet.getTile(gid+1));
@@ -337,7 +339,9 @@ public class PlayScreen implements Screen, ContactListener {
         if(!justInteracted && human && interact) {
             TiledMapTileLayer layer = (TiledMapTileLayer)level.getLayers().get(0);
             MapLayer oLayer = level.getLayers().get("objectLayer");
-            int gid1 = (Integer)level.getTileSets().getTileSet("objects").getProperties().get("firstgid");
+            int gid1 = 0;
+            if(level.getTileSets().getTileSet("objects") != null)
+                gid1 = (Integer)level.getTileSets().getTileSet("objects").getProperties().get("firstgid");
             int x = (int)player.getPosition().x;
             int y = (int)player.getPosition().y;
             TiledMapTileLayer.Cell cell = layer.getCell(x, y);
