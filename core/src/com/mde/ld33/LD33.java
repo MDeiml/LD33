@@ -25,6 +25,7 @@ public class LD33 extends Game {
         assetMngr.setLoader(TiledMap.class, new TmxMapLoader());
         assetMngr.load("spritesheet.png", Texture.class);
         assetMngr.load("caveBackround.png", Texture.class);
+        assetMngr.load("ruinBackground.png", Texture.class);
         assetMngr.load("Jump.wav", Sound.class);
         assetMngr.load("step.wav", Sound.class);
         assetMngr.load("change.wav", Sound.class);

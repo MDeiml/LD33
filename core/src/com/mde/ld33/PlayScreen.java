@@ -518,7 +518,7 @@ public class PlayScreen implements Screen, ContactListener {
             return false;
         }
         
-        if(Gdx.input.isKeyPressed(Keys.ESCAPE)) {
+        if(Gdx.input.isKeyPressed(Keys.ESCAPE) || (game.controller != null && game.controller.getButton(7))) {
             game.setScreen(new MainMenuScreen(game));
             dispose();
             return false;
@@ -579,7 +579,7 @@ public class PlayScreen implements Screen, ContactListener {
         //background
         game.batch.setProjectionMatrix(bgCam.combined);
         game.batch.begin();
-        Texture bg = game.assetMngr.get("caveBackround.png", Texture.class);
+        Texture bg = game.assetMngr.get(levelNr < 8 ? "caveBackround.png" : "ruinBackground.png", Texture.class);
         game.batch.draw(bg, -0.5f, -0.5f, 1, 1);
         game.batch.end();
         //level
@@ -619,7 +619,7 @@ public class PlayScreen implements Screen, ContactListener {
         levelRenderer.setView(levelCam);
         levelRenderer.render(new int[] {2});
         //debug
-        b2dr.render(world, cam.combined);
+//        b2dr.render(world, cam.combined);
         //monologs
         if(monologTimer <= 0 && !monolog.isEmpty() && intro <= 0) {
             monolog.remove(0);
