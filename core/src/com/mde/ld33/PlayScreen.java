@@ -5,14 +5,15 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class PlayScreen implements Screen, ContactListener {
@@ -53,6 +54,9 @@ public class PlayScreen implements Screen, ContactListener {
     private TiledMapTileLayer lightLayer;
     private int lightId;
     private int levelNr;
+    private ArrayList<String> monolog;
+    private float monologTimer = 0;
+    private float intro;
     
     public PlayScreen(LD33 game, int levelNr) {
         this.game = game;
@@ -61,10 +65,13 @@ public class PlayScreen implements Screen, ContactListener {
         world.setContactListener(this);
         cam = new OrthographicCamera();
         b2dr = new Box2DDebugRenderer();
+        intro = levelNr == 1 ? 2 : 0;
         unprocessed = 0;
         onGround = 0;
         animTime = 0;
         lastStep = 0;
+        monologTimer = 0;
+        monolog = new ArrayList<String>();
         human = true;
         game.assetMngr.load("level"+levelNr+".tmx", TiledMap.class);
         game.assetMngr.finishLoadingAsset("level"+levelNr+".tmx");
@@ -95,10 +102,14 @@ public class PlayScreen implements Screen, ContactListener {
             int start = -1;
             for(int x = 0; x < layer.getWidth(); x++) {
                 if(layer.getCell(x, y) != null && layer.getCell(x, y).getTile().getId() != gid1+43
+                                               && (layer.getCell(x, y).getTile().getId() < gid1+32
+                                               || layer.getCell(x, y).getTile().getId()  > gid1+35)
                                                && layer.getCell(x, y).getTile().getId() != gid0+0
                                                && layer.getCell(x, y).getTile().getId() != gid0+2
                                                && layer.getCell(x, y).getTile().getId() != gid0+8
-                                               && layer.getCell(x, y).getTile().getId() != gid0+10) {
+                                               && layer.getCell(x, y).getTile().getId() != gid0+10
+                                               && layer.getCell(x, y).getTile().getId() != gid0+3
+                                               && layer.getCell(x, y).getTile().getId() != gid1+48) {
                     if(start == -1)
                         start = x;
                 }else if(start != -1) {
@@ -223,13 +234,18 @@ public class PlayScreen implements Screen, ContactListener {
         fdef.isSensor = true;
         player.createFixture(fdef).setUserData("foot");
         
-        bdef.type = BodyDef.BodyType.StaticBody;
-        bdef.position.set(0, -2);
-        Body temp = world.createBody(bdef);
-        
-        fdef.isSensor = false;
-        shape.setAsBox(5, 0.5f);
-        temp.createFixture(fdef);
+        if(levelNr == 1) {
+            playerSay(new String[] {"Finally I'm free!", "After 10,000 years of being imprisoned..."
+                                   ,"Man that was boring!"});
+        }
+        if(levelNr == 9) {
+            playerSay(new String[] {"If you get stuck press ESC to go back\nto the main menu and restart the level."});
+        }
+    }
+    
+    private void playerSay(String[] texts) {
+        monolog.addAll(Arrays.asList(texts));
+        monologTimer = 3;
     }
     
     private void updateLight() {
@@ -273,7 +289,8 @@ public class PlayScreen implements Screen, ContactListener {
             cell.setRotation(r);
             if(layer.getCell(x, y) != null && layer.getCell(x, y).getTile().getId() != gid1+(dx == 0 ? 42 : 40)
                                            && layer.getCell(x, y).getTile().getId() != gid1+43
-                                           && layer.getCell(x, y).getTile().getId() != gid1+44) {
+                                           && layer.getCell(x, y).getTile().getId() != gid1+44
+                                           && layer.getCell(x, y).getTile().getId() != gid1+48) {
                 int tid = layer.getCell(x, y).getTile().getId();
                 if(tid >= gid1+32 && tid <= gid1+35) {
                     cell.setTile(lightSet.getTile(gid+1));
@@ -324,7 +341,34 @@ public class PlayScreen implements Screen, ContactListener {
         
     }
     
-    public void update(float delta) {
+    private int monologCounter = 0;
+    
+    public boolean update(float delta) {
+        
+        if(monologCounter == 0 && levelNr == 1 && player.getPosition().x > 12) {
+            monologCounter++;
+            playerSay(new String[] {"That next jump looks difficult.", "Maybe my werewolf form is\nable to jump high enough..."});
+        }
+        if(monologCounter == 0 && levelNr == 3 && player.getPosition().x > 22) {
+            monologCounter++;
+            playerSay(new String[] {"I need to be a werewolf to make this jump.", "I should try to open that trapdoor up there."});
+        }
+        if(monologCounter == 0 && levelNr == 4 && player.getPosition().x > 18) {
+            monologCounter++;
+            playerSay(new String[] {"That mirror is pointing in the wrong direction."});
+        }
+        if(monologCounter == 0 && levelNr == 5 && player.getPosition().y > 10) {
+            monologCounter++;
+            playerSay(new String[] {"I can't switch that lever as a wolf!"});
+        }
+        if(monologCounter == 0 && levelNr == 8 && player.getPosition().x > 4) {
+            monologCounter++;
+            playerSay(new String[] {"I could climb up these vines."});
+        }
+        if(monologCounter == 1 && levelNr == 8 && player.getPosition().y > 3) {
+            monologCounter++;
+            playerSay(new String[] {"My wolf form won't be able to climb."});
+        }
         
         boolean h = lightLayer.getCell((int)player.getPosition().x, (int)player.getPosition().y).getTile().getId() != lightId;
         
@@ -383,6 +427,13 @@ public class PlayScreen implements Screen, ContactListener {
         }
         justInteracted = interact;
         
+        TiledMapTileLayer layer = (TiledMapTileLayer)level.getLayers().get(0);
+        int gid = 0;
+        if(level.getTileSets().getTileSet("objects") != null)
+            gid = (Integer)level.getTileSets().getTileSet("objects").getProperties().get("firstgid");
+        TiledMapTileLayer.Cell cell = layer.getCell((int)player.getPosition().x, (int)player.getPosition().y);
+        boolean climbing = human && cell != null && cell.getTile().getId() == gid + 48;
+        
         boolean right = Gdx.input.isKeyPressed(Keys.D) || (game.controller != null && game.controller.getAxis(1) > 0.5f);
         boolean left = Gdx.input.isKeyPressed(Keys.A) || (game.controller != null && game.controller.getAxis(1) < -0.5f);
         
@@ -392,8 +443,18 @@ public class PlayScreen implements Screen, ContactListener {
         }
         
         boolean jump = (game.controller != null && game.controller.getButton(0)) || Gdx.input.isKeyPressed(Keys.SPACE);
-        if(onGround > 0)
-        {
+        if(climbing) {
+            player.getFixtureList().get(0).setFriction(3f);
+            Vector2 vel = player.getLinearVelocity();
+            player.setLinearVelocity(vel.x * 0.9f, vel.y * 0.5f);
+            player.setGravityScale(0);
+            if(Gdx.input.isKeyPressed(Keys.W) || (game.controller != null && game.controller.getAxis(0) < -0.5f)) {
+                player.applyLinearImpulse(0, 1, player.getPosition().x, player.getPosition().y, true);
+            }
+            if(Gdx.input.isKeyPressed(Keys.S) || (game.controller != null && game.controller.getAxis(0) > 0.5f)) {
+                player.applyLinearImpulse(0, -1, player.getPosition().x, player.getPosition().y, true);
+            }
+        }else if(onGround > 0) {
             if(jump && !justJumped)
             {
                 game.assetMngr.get("Jump.wav", Sound.class).play(0.4f);
@@ -405,16 +466,18 @@ public class PlayScreen implements Screen, ContactListener {
             }else {
                 player.getFixtureList().get(0).setFriction(human ? 3f : 1f);
             }
+            player.setGravityScale(1);
         }else {
+            player.setGravityScale(1);
             player.getFixtureList().get(0).setFriction(0);
         }
         
         Vector2 vel = player.getLinearVelocity();
         Vector2 pos = player.getPosition();
         
-        float speed = SPEED * (human ? 1 : 2f);
+        float speed = SPEED * (human ? 1 : 2f) * (climbing ? 0.5f : 1);
         
-        if(onGround == 0) {
+        if(onGround == 0 && !climbing) {
             if(vel.x < 0 && !left) {
                 speed = SPEED / 2;
             }else if(vel.x > 0 && !right) {
@@ -449,19 +512,56 @@ public class PlayScreen implements Screen, ContactListener {
         justJumped = jump;
         world.step(delta, 8, 6);
         
-        if(player.getPosition().x > lightLayer.getWidth()-1)
+        if(player.getPosition().x > lightLayer.getWidth()-1) {
             game.setScreen(new PlayScreen(game, levelNr+1));
+            dispose();
+            return false;
+        }
+        
+        if(Gdx.input.isKeyPressed(Keys.ESCAPE)) {
+            game.setScreen(new MainMenuScreen(game));
+            dispose();
+            return false;
+        }
+        return true;
     }
 
     @Override
     public void render(float delta) {
-        unprocessed += delta;
-        if(unprocessed >= 1/60f) {
-            unprocessed -= 1/60f;
-            update(1/60f);
+        boolean render = true;
+        if(intro > 0) {
+            boolean b = intro > 1;
+            intro -= delta;
+            if(b && intro <= 1) {
+                int gid = (Integer)level.getTileSets().getTileSet(0).getProperties().get("firstgid");
+                TiledMapTileLayer layer = (TiledMapTileLayer)level.getLayers().get(0);
+                layer.setCell(1, 10, new TiledMapTileLayer.Cell());
+                layer.getCell(1, 10).setTile(level.getTileSets().getTile(gid + 14));
+                game.assetMngr.get("explosion.wav", Sound.class).play();
+                updateLight();
+            }
+            if(intro < 0) {
+                int gid = (Integer)level.getTileSets().getTileSet(0).getProperties().get("firstgid");
+                TiledMapTileLayer layer = (TiledMapTileLayer)level.getLayers().get(0);
+                layer.setCell(2, 10, new TiledMapTileLayer.Cell());
+                layer.getCell(2, 10).setTile(level.getTileSets().getTile(gid + 14));
+                game.assetMngr.get("explosion.wav", Sound.class).play();
+                updateLight();
+            }
+        }else {
+            unprocessed += delta;
+            if(unprocessed >= 1/60f) {
+                unprocessed -= 1/60f;
+                render = update(1/60f);
+            }
         }
         
+        if(!render)
+            return;
+        
         animTime += delta;
+        if(intro <= 0)
+            monologTimer = Math.max(monologTimer-delta, 0);
         
         Gdx.gl20.glClearColor(0, 0, 0, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -470,8 +570,8 @@ public class PlayScreen implements Screen, ContactListener {
         float minX = cam.viewportWidth/2;
         float maxY = lightLayer.getHeight() - cam.viewportHeight/2;
         float minY = cam.viewportHeight/2;
-        cam.position.x = Math.min(Math.max(player.getPosition().x, minX), maxX);
-        cam.position.y = Math.min(Math.max(player.getPosition().y, minY), maxY);
+        cam.position.x = Math.max(Math.min(player.getPosition().x, maxX), minX);
+        cam.position.y = Math.max(Math.min(player.getPosition().y, maxY), minY);
         levelCam.position.x = cam.position.x * 32;
         levelCam.position.y = cam.position.y * 32;
         cam.update();
@@ -520,9 +620,20 @@ public class PlayScreen implements Screen, ContactListener {
         levelRenderer.render(new int[] {2});
         //debug
         b2dr.render(world, cam.combined);
+        //monologs
+        if(monologTimer <= 0 && !monolog.isEmpty() && intro <= 0) {
+            monolog.remove(0);
+            monologTimer = 3;
+        }
+        if(!monolog.isEmpty() && intro <= 0) {
+            game.batch.begin();
+            GlyphLayout gl = new GlyphLayout(game.assetMngr.get("ascii.fnt", BitmapFont.class), monolog.get(0));
+            float px1 = player.getPosition().x * 32;
+            float py1 = (player.getPosition().y+1) * 32;
+            game.assetMngr.get("ascii.fnt", BitmapFont.class).draw(game.batch, gl, px1-gl.width/2, py1+gl.height);
+            game.batch.end();
+        }
     }
-    
-   
 
     @Override
     public void resize(int width, int height) {
@@ -542,7 +653,12 @@ public class PlayScreen implements Screen, ContactListener {
     public void hide() {}
 
     @Override
-    public void dispose() {}
+    public void dispose() {
+        System.out.println("a");
+        b2dr.dispose();
+        game.assetMngr.unload("level"+levelNr+".tmx");
+        world.dispose();
+    }
 
     @Override
     public void beginContact(Contact contact) {

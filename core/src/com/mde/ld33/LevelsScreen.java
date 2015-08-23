@@ -42,6 +42,21 @@ public class LevelsScreen implements Screen {
         }
         table.row();
         
+        for(int i = 8; i <= 9; i++) {
+            TextButton lb = new TextButton("Level "+i, skin);
+            final int lvl = i;
+            lb.addListener(new ClickListener() {
+                @Override
+                public boolean touchDown(InputEvent e, float x, float y, int pointer, int button) {
+                    LevelsScreen.this.game.setScreen(new PlayScreen(LevelsScreen.this.game, lvl));
+                    return true;
+                }
+            });
+            lb.setDisabled(true);
+            table.add(lb).pad(1f).width(48);
+        }
+        table.row();
+        
         table.add();
         table.add();
         table.add();
@@ -51,6 +66,7 @@ public class LevelsScreen implements Screen {
             @Override
             public boolean touchDown(InputEvent e, float x, float y, int pointer, int button) {
                 LevelsScreen.this.game.setScreen(before);
+                dispose();
                 return true;
             }
         });
@@ -77,7 +93,7 @@ public class LevelsScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        
+        stage.getViewport().update(width, height);
     }
 
     @Override
@@ -96,6 +112,7 @@ public class LevelsScreen implements Screen {
 
     @Override
     public void dispose() {
+        stage.dispose();
     }
     
 }

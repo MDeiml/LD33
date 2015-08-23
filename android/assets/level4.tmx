@@ -4,13 +4,13 @@
   <property name="SpawnX" value="4"/>
   <property name="SpawnY" value="4"/>
  </properties>
- <tileset firstgid="1" name="tileset_cave" tilewidth="32" tileheight="32" tilecount="16">
+ <tileset firstgid="1" name="tileset_cave" tilewidth="32" tileheight="32">
   <image source="tileset_cave.png" width="128" height="128"/>
  </tileset>
- <tileset firstgid="17" name="light" tilewidth="32" tileheight="32" tilecount="4">
+ <tileset firstgid="17" name="light" tilewidth="32" tileheight="32">
   <image source="light.png" width="64" height="64"/>
  </tileset>
- <tileset firstgid="21" name="objects" tilewidth="32" tileheight="32" tilecount="64">
+ <tileset firstgid="21" name="objects" tilewidth="32" tileheight="32">
   <image source="spritesheet.png" width="256" height="256"/>
  </tileset>
  <layer name="Kachelebene 1" width="30" height="50">

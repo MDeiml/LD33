@@ -26,11 +26,28 @@ public class ControlsScreen implements Screen {
         table.setFillParent(true);
         stage.addActor(table);
         
-        Label controls = new Label("A/D - Walk left/right\n"
-                                 + "SPACE - Jump\n"
-                                 + "W - Interact", skin);
-        controls.setFontScale(2);
-        table.add(controls);
+        
+        Table table1 = new Table(skin);
+        table1.add("A/D");
+        table1.add(" - ");
+        table1.add("Walk left/right");
+        table1.row();
+        table1.add("SPACE");
+        table1.add(" - ");
+        table1.add("Jump");
+        table1.row();
+        table1.add("W");
+        table1.add(" - ");
+        table1.add("Interact/Climb up");
+        table1.row();
+        table1.add("S");
+        table1.add(" - ");
+        table1.add("Climb down");
+        table1.row();
+        table1.add("ESC");
+        table1.add(" - ");
+        table1.add("Main menu");
+        table.add(table1);
         table.row();
         
         TextButton backB = new TextButton("Back", skin);
@@ -38,6 +55,7 @@ public class ControlsScreen implements Screen {
             @Override
             public boolean touchDown(InputEvent e, float x, float y, int pointer, int button) {
                 ControlsScreen.this.game.setScreen(before);
+                dispose();
                 return true;
             }
         });
@@ -64,7 +82,7 @@ public class ControlsScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        
+        stage.getViewport().update(width, height);
     }
 
     @Override
@@ -83,6 +101,7 @@ public class ControlsScreen implements Screen {
 
     @Override
     public void dispose() {
+        stage.dispose();
     }
     
 }
