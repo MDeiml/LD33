@@ -42,6 +42,13 @@ public class MainMenuScreen implements Screen {
         table.row();
         
         TextButton levelB = new TextButton("Select level", skin);
+        levelB.addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent e, float x, float y, int pointer, int button) {
+                MainMenuScreen.this.game.setScreen(new LevelsScreen(MainMenuScreen.this.game, MainMenuScreen.this));
+                return true;
+            }
+        });
         levelB.setDisabled(true);
         table.add(levelB).pad(1f).width(96);
         table.row();

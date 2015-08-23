@@ -4,10 +4,10 @@
   <property name="SpawnX" value="1"/>
   <property name="SpawnY" value="3"/>
  </properties>
- <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32" tilecount="16">
+ <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32">
   <image source="tileset_cave.png" width="128" height="128"/>
  </tileset>
- <tileset firstgid="17" name="light" tilewidth="32" tileheight="32" tilecount="4">
+ <tileset firstgid="17" name="light" tilewidth="32" tileheight="32">
   <image source="light.png" width="64" height="64"/>
  </tileset>
  <layer name="Kachelebene 1" width="64" height="12">
@@ -15,4 +15,5 @@
    eJzdVdEKgCAMjKAio/r/v60gaYxt3sxBdHAvOXd3mjp1D4aTo5NTp6Omn9V7FzRSQ40v5U83Ecyk3rsekfmzL2/uBcxd0kW0I/NTP616eVHaAyt/Muj1jPR+u+8WtP9Byo94mcE6Xu851xHgPnj+yD34Imh+6X35O1reOevJLbBemlPTg+I67/1NrQ+qcZ0fz3qW6iVdPseryYG8P6hGvj97kCOpl9ZX0o3Mr3m3xqS6WiK6/BvqTeMBB0gIbA==
   </data>
  </layer>
+ <objectgroup name="objectLayer"/>
 </map>
