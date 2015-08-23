@@ -37,6 +37,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public boolean touchDown(InputEvent e, float x, float y, int pointer, int button) {
                 MainMenuScreen.this.game.setScreen(new PlayScreen(MainMenuScreen.this.game, 1));
+                dispose();
                 return true;
             }
         });
@@ -118,6 +119,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {
+        stage.dispose();
     }
     
 }

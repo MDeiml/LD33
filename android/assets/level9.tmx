@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="30" tilewidth="32" tileheight="32" nextobjectid="5">
+ <properties>
+  <property name="SpawnX" value="24"/>
+  <property name="SpawnY" value="1"/>
+ </properties>
+ <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32">
+  <image source="tileset_ruin.png" width="128" height="128"/>
+ </tileset>
+ <tileset firstgid="17" name="light" tilewidth="32" tileheight="32">
+  <image source="light.png" width="64" height="64"/>
+ </tileset>
+ <tileset firstgid="21" name="objects" tilewidth="32" tileheight="32">
+  <image source="spritesheet.png" width="256" height="256"/>
+ </tileset>
+ <layer name="Kachelebene 1" width="50" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztl9FuwyAMRb1Oo0qm9G/W9WVSXvL/v7QhYfXWM2CIWaetV7KSEjCchhsngYhmiJBiVkJKXpvFWNlnVvp4xVGsbVLaWvRi6FPLf4Hzd+O8Ws57c/TowaFrNMfyFQcltJwB4tQ4zwgOXHvIzFnK2eP5ydDntTFnqIypcZDh+k9IuweoFo610OcAR4wPpa0WUnFPeXAEmMPqla3w21IbznT1BPu0JAsHS/OK9v9FlTgs4ntg9VELByl9c+vbyxHXVbsHsv9/5JBeketj/1g4lkyb1ROoVg4We0Wuj3NZOLR6GdtaawuP660PJQ6pFo4eeXDEvXCCNk0lDhx/Dw72SoAc8fwZ+qzpKDme6Lr/2dNHavMEag8HC+vKRLfPAo6Nbus11oZeT6A8OCjleCtczz13z9S/l1BeHLX3e8mxpuNCv4+D9xPyrOkoOXrrRE5eHCz5DhZE4Lx7PYHy5qBMPnk/PPaSzPfg0KV9r3C9LH1j79EIDhZ6ZSN/T6BGchB95xilv8ShvUd4Rcicj5jnEw2rEqk=
+  </data>
+ </layer>
+ <objectgroup name="objectLayer">
+  <object id="1" gid="64" x="736" y="704" width="32" height="32">
+   <properties>
+    <property name="TargetX" value="18"/>
+    <property name="TargetY" value="10"/>
+   </properties>
+  </object>
+  <object id="2" gid="64" x="928" y="672" width="32" height="32">
+   <properties>
+    <property name="TargetX" value="23"/>
+    <property name="TargetY" value="21"/>
+   </properties>
+  </object>
+  <object id="3" gid="64" x="736" y="576" width="32" height="32">
+   <properties>
+    <property name="TargetX" value="31"/>
+    <property name="TargetY" value="20"/>
+   </properties>
+  </object>
+  <object id="4" gid="64" x="320" y="288" width="32" height="32">
+   <properties>
+    <property name="TargetX" value="18"/>
+    <property name="TargetY" value="10"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

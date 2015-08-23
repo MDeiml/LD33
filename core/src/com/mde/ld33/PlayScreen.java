@@ -103,7 +103,7 @@ public class PlayScreen implements Screen, ContactListener {
             for(int x = 0; x < layer.getWidth(); x++) {
                 if(layer.getCell(x, y) != null && layer.getCell(x, y).getTile().getId() != gid1+43
                                                && (layer.getCell(x, y).getTile().getId() < gid1+32
-                                               || layer.getCell(x, y).getTile().getId()  > gid1+34)
+                                               || layer.getCell(x, y).getTile().getId()  > gid1+35)
                                                && layer.getCell(x, y).getTile().getId() != gid0+0
                                                && layer.getCell(x, y).getTile().getId() != gid0+2
                                                && layer.getCell(x, y).getTile().getId() != gid0+8
@@ -238,6 +238,9 @@ public class PlayScreen implements Screen, ContactListener {
             playerSay(new String[] {"Finally I'm free!", "After 10,000 years of being imprisoned..."
                                    ,"Man that was boring!"});
         }
+        if(levelNr == 9) {
+            playerSay(new String[] {"If you get stuck press ESC to go back\nto the main menu and restart the level."});
+        }
     }
     
     private void playerSay(String[] texts) {
@@ -340,7 +343,7 @@ public class PlayScreen implements Screen, ContactListener {
     
     private int monologCounter = 0;
     
-    public void update(float delta) {
+    public boolean update(float delta) {
         
         if(monologCounter == 0 && levelNr == 1 && player.getPosition().x > 12) {
             monologCounter++;
@@ -357,6 +360,14 @@ public class PlayScreen implements Screen, ContactListener {
         if(monologCounter == 0 && levelNr == 5 && player.getPosition().y > 10) {
             monologCounter++;
             playerSay(new String[] {"I can't switch that lever as a wolf!"});
+        }
+        if(monologCounter == 0 && levelNr == 8 && player.getPosition().x > 4) {
+            monologCounter++;
+            playerSay(new String[] {"I could climb up these vines."});
+        }
+        if(monologCounter == 1 && levelNr == 8 && player.getPosition().y > 3) {
+            monologCounter++;
+            playerSay(new String[] {"My wolf form won't be able to climb."});
         }
         
         boolean h = lightLayer.getCell((int)player.getPosition().x, (int)player.getPosition().y).getTile().getId() != lightId;
@@ -417,10 +428,11 @@ public class PlayScreen implements Screen, ContactListener {
         justInteracted = interact;
         
         TiledMapTileLayer layer = (TiledMapTileLayer)level.getLayers().get(0);
-        int gid = (Integer)level.getTileSets().getTileSet("objects").getProperties().get("firstgid");
+        int gid = 0;
+        if(level.getTileSets().getTileSet("objects") != null)
+            gid = (Integer)level.getTileSets().getTileSet("objects").getProperties().get("firstgid");
         TiledMapTileLayer.Cell cell = layer.getCell((int)player.getPosition().x, (int)player.getPosition().y);
         boolean climbing = human && cell != null && cell.getTile().getId() == gid + 48;
-        System.out.println(climbing);
         
         boolean right = Gdx.input.isKeyPressed(Keys.D) || (game.controller != null && game.controller.getAxis(1) > 0.5f);
         boolean left = Gdx.input.isKeyPressed(Keys.A) || (game.controller != null && game.controller.getAxis(1) < -0.5f);
@@ -432,13 +444,13 @@ public class PlayScreen implements Screen, ContactListener {
         
         boolean jump = (game.controller != null && game.controller.getButton(0)) || Gdx.input.isKeyPressed(Keys.SPACE);
         if(climbing) {
+            player.getFixtureList().get(0).setFriction(3f);
             Vector2 vel = player.getLinearVelocity();
             player.setLinearVelocity(vel.x * 0.9f, vel.y * 0.5f);
             player.setGravityScale(0);
             if(Gdx.input.isKeyPressed(Keys.W) || (game.controller != null && game.controller.getAxis(0) < -0.5f)) {
                 player.applyLinearImpulse(0, 1, player.getPosition().x, player.getPosition().y, true);
             }
-            System.out.println(game.controller.getAxis(0));
             if(Gdx.input.isKeyPressed(Keys.S) || (game.controller != null && game.controller.getAxis(0) > 0.5f)) {
                 player.applyLinearImpulse(0, -1, player.getPosition().x, player.getPosition().y, true);
             }
@@ -454,6 +466,7 @@ public class PlayScreen implements Screen, ContactListener {
             }else {
                 player.getFixtureList().get(0).setFriction(human ? 3f : 1f);
             }
+            player.setGravityScale(1);
         }else {
             player.setGravityScale(1);
             player.getFixtureList().get(0).setFriction(0);
@@ -499,12 +512,23 @@ public class PlayScreen implements Screen, ContactListener {
         justJumped = jump;
         world.step(delta, 8, 6);
         
-        if(player.getPosition().x > lightLayer.getWidth()-1)
+        if(player.getPosition().x > lightLayer.getWidth()-1) {
             game.setScreen(new PlayScreen(game, levelNr+1));
+            dispose();
+            return false;
+        }
+        
+        if(Gdx.input.isKeyPressed(Keys.ESCAPE)) {
+            game.setScreen(new MainMenuScreen(game));
+            dispose();
+            return false;
+        }
+        return true;
     }
 
     @Override
     public void render(float delta) {
+        boolean render = true;
         if(intro > 0) {
             boolean b = intro > 1;
             intro -= delta;
@@ -528,9 +552,12 @@ public class PlayScreen implements Screen, ContactListener {
             unprocessed += delta;
             if(unprocessed >= 1/60f) {
                 unprocessed -= 1/60f;
-                update(1/60f);
+                render = update(1/60f);
             }
         }
+        
+        if(!render)
+            return;
         
         animTime += delta;
         if(intro <= 0)
@@ -607,8 +634,6 @@ public class PlayScreen implements Screen, ContactListener {
             game.batch.end();
         }
     }
-    
-   
 
     @Override
     public void resize(int width, int height) {
@@ -628,7 +653,12 @@ public class PlayScreen implements Screen, ContactListener {
     public void hide() {}
 
     @Override
-    public void dispose() {}
+    public void dispose() {
+        System.out.println("a");
+        b2dr.dispose();
+        game.assetMngr.unload("level"+levelNr+".tmx");
+        world.dispose();
+    }
 
     @Override
     public void beginContact(Contact contact) {

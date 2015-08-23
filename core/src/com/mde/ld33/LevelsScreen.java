@@ -27,7 +27,22 @@ public class LevelsScreen implements Screen {
         table.setFillParent(true);
         stage.addActor(table);
         
-        for(int i = 1; i <= 8; i++) {
+        for(int i = 1; i <= 7; i++) {
+            TextButton lb = new TextButton("Level "+i, skin);
+            final int lvl = i;
+            lb.addListener(new ClickListener() {
+                @Override
+                public boolean touchDown(InputEvent e, float x, float y, int pointer, int button) {
+                    LevelsScreen.this.game.setScreen(new PlayScreen(LevelsScreen.this.game, lvl));
+                    return true;
+                }
+            });
+            lb.setDisabled(true);
+            table.add(lb).pad(1f).width(48);
+        }
+        table.row();
+        
+        for(int i = 8; i <= 9; i++) {
             TextButton lb = new TextButton("Level "+i, skin);
             final int lvl = i;
             lb.addListener(new ClickListener() {
@@ -51,6 +66,7 @@ public class LevelsScreen implements Screen {
             @Override
             public boolean touchDown(InputEvent e, float x, float y, int pointer, int button) {
                 LevelsScreen.this.game.setScreen(before);
+                dispose();
                 return true;
             }
         });
@@ -96,6 +112,7 @@ public class LevelsScreen implements Screen {
 
     @Override
     public void dispose() {
+        stage.dispose();
     }
     
 }

@@ -43,6 +43,10 @@ public class ControlsScreen implements Screen {
         table1.add("S");
         table1.add(" - ");
         table1.add("Climb down");
+        table1.row();
+        table1.add("ESC");
+        table1.add(" - ");
+        table1.add("Main menu");
         table.add(table1);
         table.row();
         
@@ -51,6 +55,7 @@ public class ControlsScreen implements Screen {
             @Override
             public boolean touchDown(InputEvent e, float x, float y, int pointer, int button) {
                 ControlsScreen.this.game.setScreen(before);
+                dispose();
                 return true;
             }
         });
@@ -96,6 +101,7 @@ public class ControlsScreen implements Screen {
 
     @Override
     public void dispose() {
+        stage.dispose();
     }
     
 }
