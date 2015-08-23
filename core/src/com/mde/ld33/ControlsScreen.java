@@ -26,11 +26,24 @@ public class ControlsScreen implements Screen {
         table.setFillParent(true);
         stage.addActor(table);
         
-        Label controls = new Label("A/D - Walk left/right\n"
-                                 + "SPACE - Jump\n"
-                                 + "W - Interact", skin);
-        controls.setFontScale(2);
-        table.add(controls);
+        
+        Table table1 = new Table(skin);
+        table1.add("A/D");
+        table1.add(" - ");
+        table1.add("Walk left/right");
+        table1.row();
+        table1.add("SPACE");
+        table1.add(" - ");
+        table1.add("Jump");
+        table1.row();
+        table1.add("W");
+        table1.add(" - ");
+        table1.add("Interact/Climb up");
+        table1.row();
+        table1.add("S");
+        table1.add(" - ");
+        table1.add("Climb down");
+        table.add(table1);
         table.row();
         
         TextButton backB = new TextButton("Back", skin);
