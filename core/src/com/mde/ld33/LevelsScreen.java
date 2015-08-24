@@ -1,7 +1,6 @@
 package com.mde.ld33;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -23,9 +22,15 @@ public class LevelsScreen implements Screen {
         
         Skin skin = game.assetMngr.get("skin.json", Skin.class);
         
-        Table table = new Table();
+        Table table = new Table(skin);
         table.setFillParent(true);
         stage.addActor(table);
+        
+        table.add();
+        table.add();
+        table.add();
+        table.add("Area 1").pad(2f);
+        table.row();
         
         for(int i = 1; i <= 7; i++) {
             TextButton lb = new TextButton("Level "+i, skin);
@@ -40,6 +45,12 @@ public class LevelsScreen implements Screen {
             lb.setDisabled(true);
             table.add(lb).pad(1f).width(48);
         }
+        table.row();
+        
+        table.add();
+        table.add();
+        table.add();
+        table.add("Area 2").pad(2f);
         table.row();
         
         for(int i = 8; i <= 9; i++) {
@@ -76,7 +87,7 @@ public class LevelsScreen implements Screen {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        ((InputMultiplexer)Gdx.input.getInputProcessor()).addProcessor(stage);
     }
 
     @Override
@@ -106,7 +117,7 @@ public class LevelsScreen implements Screen {
 
     @Override
     public void hide() {
-        Gdx.input.setInputProcessor(null);
+        ((InputMultiplexer)Gdx.input.getInputProcessor()).removeProcessor(stage);
         Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
