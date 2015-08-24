@@ -43,7 +43,7 @@
     <property name="TargetY" value="37"/>
    </properties>
   </object>
-  <object id="8" gid="64" x="1055.67" y="608.333" width="32" height="32">
+  <object id="8" gid="64" x="1056" y="608" width="32" height="32">
    <properties>
     <property name="TargetX" value="27"/>
     <property name="TargetY" value="27"/>
