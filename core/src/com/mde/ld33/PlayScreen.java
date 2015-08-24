@@ -261,7 +261,7 @@ public class PlayScreen implements Screen, ContactListener {
         if(levelNr == 8) {
             playerSay(new String[] {"Now that I've escaped the cave,\nthere obviously needs to be a ruin I have to go through!"});
         }
-        if(levelNr == 9) {
+        if(levelNr == 11) {
             playerSay(new String[] {"If you get stuck press M to go back\nto the main menu and restart the level."});
         }
     }
@@ -380,7 +380,7 @@ public class PlayScreen implements Screen, ContactListener {
             monologCounter++;
             playerSay(new String[] {"That mirror is pointing in the wrong direction."});
         }
-        if(monologCounter == 0 && levelNr == 5 && player.getPosition().y > 10) {
+        if(monologCounter == 0 && levelNr == 7 && player.getPosition().y > 10) {
             monologCounter++;
             playerSay(new String[] {"I can't switch that lever as a wolf!"});
         }
@@ -542,7 +542,10 @@ public class PlayScreen implements Screen, ContactListener {
         world.step(delta, 8, 6);
         
         if(player.getPosition().x > lightLayer.getWidth()-1) {
-            game.setScreen(new PlayScreen(game, levelNr+1));
+            if(levelNr < 12)
+                game.setScreen(new PlayScreen(game, levelNr+1));
+            else
+                game.setScreen(new WinScreen(game));
             dispose();
             return false;
         }

@@ -21,6 +21,8 @@ public class LD33 extends Game {
 
     @Override
     public void create () {
+        if(Gdx.app.getType() == Application.ApplicationType.Desktop)
+            Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
         batch = new SpriteBatch();
         assetMngr = new AssetManager();
         assetMngr.setLoader(TiledMap.class, new TmxMapLoader());
@@ -46,7 +48,7 @@ public class LD33 extends Game {
         InputAdapter webGlfullscreen = new InputAdapter() {
             @Override
             public boolean keyDown(int keycode) {
-                if (keycode == Keys.F) {
+                if(Gdx.app.getType() == Application.ApplicationType.WebGL && keycode == Keys.F) {
                     if (!Gdx.graphics.isFullscreen()) {
                         Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
                     }else {

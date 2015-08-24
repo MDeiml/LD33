@@ -9,7 +9,9 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
                 config.width = 800;
                 config.height = 600;
+                config.fullscreen = true;
                 config.useGL30 = false;
+                config.title = "Where-Wolf";
 		new LwjglApplication(new LD33(), config);
 	}
 }
