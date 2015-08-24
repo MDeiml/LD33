@@ -607,7 +607,7 @@ public class PlayScreen implements Screen, ContactListener {
         //background
         game.batch.setProjectionMatrix(bgCam.combined);
         game.batch.begin();
-        Texture bg = game.assetMngr.get(levelNr < 8 ? "caveBackround.png" : "ruinBackground.png", Texture.class);
+        Texture bg = game.assetMngr.get(levelNr < 8 ? "caveBackround.png" : "ruinbackground.png", Texture.class);
         game.batch.draw(bg, -0.5f, -0.5f, 1, 1);
         game.batch.end();
         //level

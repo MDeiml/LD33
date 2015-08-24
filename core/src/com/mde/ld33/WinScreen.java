@@ -9,13 +9,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 
-public class LevelsScreen implements Screen {
+public class WinScreen implements Screen {
     
     private LD33 game;
     private Stage stage;
     private Camera bgCam;
     
-    public LevelsScreen(LD33 game, final Screen before) {
+    public WinScreen(LD33 game) {
         this.game = game;
         bgCam = new OrthographicCamera(1, 1);
         stage = new Stage(new FitViewport(400, 300));
@@ -26,57 +26,16 @@ public class LevelsScreen implements Screen {
         table.setFillParent(true);
         stage.addActor(table);
         
-        table.add();
-        table.add();
-        table.add();
-        table.add("Area 1").pad(2f);
+        Label msg = new Label("You win!", skin);
+        msg.setFontScale(6);
+        table.add(msg);
         table.row();
-        
-        for(int i = 1; i <= 7; i++) {
-            TextButton lb = new TextButton("Level "+i, skin);
-            final int lvl = i;
-            lb.addListener(new ClickListener() {
-                @Override
-                public boolean touchDown(InputEvent e, float x, float y, int pointer, int button) {
-                    LevelsScreen.this.game.setScreen(new PlayScreen(LevelsScreen.this.game, lvl));
-                    return true;
-                }
-            });
-            lb.setDisabled(true);
-            table.add(lb).pad(1f).width(48);
-        }
-        table.row();
-        
-        table.add();
-        table.add();
-        table.add();
-        table.add("Area 2").pad(2f);
-        table.row();
-        
-        for(int i = 8; i <= 10; i++) {
-            TextButton lb = new TextButton("Level "+i, skin);
-            final int lvl = i;
-            lb.addListener(new ClickListener() {
-                @Override
-                public boolean touchDown(InputEvent e, float x, float y, int pointer, int button) {
-                    LevelsScreen.this.game.setScreen(new PlayScreen(LevelsScreen.this.game, lvl));
-                    return true;
-                }
-            });
-            lb.setDisabled(true);
-            table.add(lb).pad(1f).width(48);
-        }
-        table.row();
-        
-        table.add();
-        table.add();
-        table.add();
         
         TextButton backB = new TextButton("Back", skin);
         backB.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent e, float x, float y, int pointer, int button) {
-                LevelsScreen.this.game.setScreen(before);
+                WinScreen.this.game.setScreen(new MainMenuScreen(WinScreen.this.game));
                 dispose();
                 return true;
             }
