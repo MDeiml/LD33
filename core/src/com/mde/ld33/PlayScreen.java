@@ -26,6 +26,7 @@ public class PlayScreen implements Screen, ContactListener {
     private static final int WALK_LEFT = 3;
     private static final int CHANGE_RIGHT = 4;
     private static final int CHANGE_LEFT = 5;
+    private static final int CLIMB = 6;
     
     private LD33 game;
     private World world;
@@ -41,6 +42,7 @@ public class PlayScreen implements Screen, ContactListener {
     private Animation manStand;
     private Animation manWalk;
     private Animation change;
+    private Animation climb;
     private TextureRegion wolfJump;
     private TextureRegion manJump;
     private float animTime;
@@ -57,6 +59,10 @@ public class PlayScreen implements Screen, ContactListener {
     private ArrayList<String> monolog;
     private float monologTimer = 0;
     private float intro;
+    private Sound jumpS;
+    private Sound changeS;
+    private Sound stepS;
+    private Sound explosionS;
     
     public PlayScreen(LD33 game, int levelNr) {
         this.game = game;
@@ -69,16 +75,22 @@ public class PlayScreen implements Screen, ContactListener {
         unprocessed = 0;
         onGround = 0;
         animTime = 0;
+        animState = 0;
         lastStep = 0;
         monologTimer = 0;
         monolog = new ArrayList<String>();
-        human = true;
+        human = levelNr != 1;
         game.assetMngr.load("level"+levelNr+".tmx", TiledMap.class);
         game.assetMngr.finishLoadingAsset("level"+levelNr+".tmx");
         level = game.assetMngr.get("level"+levelNr+".tmx");
         levelRenderer = new OrthogonalTiledMapRenderer(level, game.batch);
         levelCam = new OrthographicCamera();
         bgCam = new OrthographicCamera(1,1);
+        
+        jumpS = game.assetMngr.get("Jump.wav", Sound.class);
+        changeS = game.assetMngr.get("change.wav", Sound.class);
+        stepS = game.assetMngr.get("step.wav", Sound.class);
+        explosionS = game.assetMngr.get("explosion.wav", Sound.class);
         
 //        MapLayer objectLayer = level.getLayers().get(1);
         
@@ -215,6 +227,14 @@ public class PlayScreen implements Screen, ContactListener {
         }
         change = new Animation(0.100f,regs);
         
+        regs = new TextureRegion[2];
+        for(int i = 0; i < 2; i++)
+        {
+            regs[i] = new TextureRegion(game.assetMngr.get("spritesheet.png", Texture.class), (i+5)*32, 32, 32, 32);
+            
+        }
+        climb = new Animation(0.200f,regs);
+        
         wolfJump = new TextureRegion(game.assetMngr.get("spritesheet.png", Texture.class), 4*32, 0, 32, 32);
         manJump = new TextureRegion(game.assetMngr.get("spritesheet.png", Texture.class), 3*32, 2*32, 32, 32);
         
@@ -239,7 +259,7 @@ public class PlayScreen implements Screen, ContactListener {
                                    ,"Man that was boring!"});
         }
         if(levelNr == 9) {
-            playerSay(new String[] {"If you get stuck press ESC to go back\nto the main menu and restart the level."});
+            playerSay(new String[] {"If you get stuck press M to go back\nto the main menu and restart the level."});
         }
     }
     
@@ -373,7 +393,7 @@ public class PlayScreen implements Screen, ContactListener {
         boolean h = lightLayer.getCell((int)player.getPosition().x, (int)player.getPosition().y).getTile().getId() != lightId;
         
         if(human != h) {
-            game.assetMngr.get("change.wav", Sound.class).play();
+            changeS.play();
             human = h;
             animTime = 0;
             animState = animState % 2 + 4;
@@ -439,25 +459,28 @@ public class PlayScreen implements Screen, ContactListener {
         
         if(!human && (right || left) && (animTime - lastStep) > 0.360f && onGround > 0) {
             lastStep = (int)(animTime / 0.360f) * 0.360f;
-            game.assetMngr.get("step.wav", Sound.class).play();
+            stepS.play();
         }
         
         boolean jump = (game.controller != null && game.controller.getButton(0)) || Gdx.input.isKeyPressed(Keys.SPACE);
         if(climbing) {
+            animState = CLIMB;
             player.getFixtureList().get(0).setFriction(3f);
             Vector2 vel = player.getLinearVelocity();
             player.setLinearVelocity(vel.x * 0.9f, vel.y * 0.5f);
             player.setGravityScale(0);
             if(Gdx.input.isKeyPressed(Keys.W) || (game.controller != null && game.controller.getAxis(0) < -0.5f)) {
                 player.applyLinearImpulse(0, 1, player.getPosition().x, player.getPosition().y, true);
+                animTime += delta;
             }
             if(Gdx.input.isKeyPressed(Keys.S) || (game.controller != null && game.controller.getAxis(0) > 0.5f)) {
                 player.applyLinearImpulse(0, -1, player.getPosition().x, player.getPosition().y, true);
+                animTime += delta;
             }
         }else if(onGround > 0) {
             if(jump && !justJumped)
             {
-                game.assetMngr.get("Jump.wav", Sound.class).play(0.4f);
+                jumpS.play();
                 player.applyLinearImpulse(0, human ? 10 : 12, player.getPosition().x, player.getPosition().y, true);
             }
             
@@ -509,6 +532,9 @@ public class PlayScreen implements Screen, ContactListener {
             animState = animState % 2;
         }
         
+        if(climbing)
+            animState = CLIMB;
+        
         justJumped = jump;
         world.step(delta, 8, 6);
         
@@ -518,7 +544,7 @@ public class PlayScreen implements Screen, ContactListener {
             return false;
         }
         
-        if(Gdx.input.isKeyPressed(Keys.ESCAPE)) {
+        if(Gdx.input.isKeyPressed(Keys.M) || (game.controller != null && game.controller.getButton(7))) {
             game.setScreen(new MainMenuScreen(game));
             dispose();
             return false;
@@ -537,7 +563,7 @@ public class PlayScreen implements Screen, ContactListener {
                 TiledMapTileLayer layer = (TiledMapTileLayer)level.getLayers().get(0);
                 layer.setCell(1, 10, new TiledMapTileLayer.Cell());
                 layer.getCell(1, 10).setTile(level.getTileSets().getTile(gid + 14));
-                game.assetMngr.get("explosion.wav", Sound.class).play();
+                explosionS.play();
                 updateLight();
             }
             if(intro < 0) {
@@ -559,7 +585,9 @@ public class PlayScreen implements Screen, ContactListener {
         if(!render)
             return;
         
-        animTime += delta;
+        if(animState != CLIMB)
+            animTime += delta;
+        
         if(intro <= 0)
             monologTimer = Math.max(monologTimer-delta, 0);
         
@@ -579,7 +607,7 @@ public class PlayScreen implements Screen, ContactListener {
         //background
         game.batch.setProjectionMatrix(bgCam.combined);
         game.batch.begin();
-        Texture bg = game.assetMngr.get("caveBackround.png", Texture.class);
+        Texture bg = game.assetMngr.get(levelNr < 8 ? "caveBackround.png" : "ruinBackground.png", Texture.class);
         game.batch.draw(bg, -0.5f, -0.5f, 1, 1);
         game.batch.end();
         //level
@@ -612,6 +640,9 @@ public class PlayScreen implements Screen, ContactListener {
             case CHANGE_LEFT:
                 p = change.getKeyFrame(animTime, false);
                 break;
+            case CLIMB:
+                p = climb.getKeyFrame(animTime, true);
+                break;
         }
         game.batch.draw(p, px, player.getPosition().y-0.5f, w, 1);
         game.batch.end();
@@ -619,7 +650,7 @@ public class PlayScreen implements Screen, ContactListener {
         levelRenderer.setView(levelCam);
         levelRenderer.render(new int[] {2});
         //debug
-        b2dr.render(world, cam.combined);
+//        b2dr.render(world, cam.combined);
         //monologs
         if(monologTimer <= 0 && !monolog.isEmpty() && intro <= 0) {
             monolog.remove(0);
@@ -654,7 +685,6 @@ public class PlayScreen implements Screen, ContactListener {
 
     @Override
     public void dispose() {
-        System.out.println("a");
         b2dr.dispose();
         game.assetMngr.unload("level"+levelNr+".tmx");
         world.dispose();

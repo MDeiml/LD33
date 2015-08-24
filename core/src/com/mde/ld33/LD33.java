@@ -1,6 +1,7 @@
 package com.mde.ld33;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.audio.Music;
@@ -25,6 +26,7 @@ public class LD33 extends Game {
         assetMngr.setLoader(TiledMap.class, new TmxMapLoader());
         assetMngr.load("spritesheet.png", Texture.class);
         assetMngr.load("caveBackround.png", Texture.class);
+        assetMngr.load("ruinBackground.png", Texture.class);
         assetMngr.load("Jump.wav", Sound.class);
         assetMngr.load("step.wav", Sound.class);
         assetMngr.load("change.wav", Sound.class);
@@ -41,9 +43,25 @@ public class LD33 extends Game {
                 controller = c;
         }
         
+        InputAdapter webGlfullscreen = new InputAdapter() {
+            @Override
+            public boolean keyDown(int keycode) {
+                if (keycode == Keys.F) {
+                    if (!Gdx.graphics.isFullscreen()) {
+                        Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode());
+                    }else {
+                        Gdx.graphics.setDisplayMode(800, 600, false);
+                    }
+                    return true;
+                }
+                return false;
+            }
+        };
+        Gdx.input.setInputProcessor(new InputMultiplexer(webGlfullscreen));
+        
         assetMngr.finishLoading();
-//        assetMngr.get("music.ogg", Music.class).setLooping(true);
-//        assetMngr.get("music.ogg", Music.class).play();
+        assetMngr.get("music.ogg", Music.class).setLooping(true);
+        assetMngr.get("music.ogg", Music.class).play();
         setScreen(new MainMenuScreen(this));
     }
     
