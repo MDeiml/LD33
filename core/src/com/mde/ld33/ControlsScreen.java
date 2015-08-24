@@ -28,25 +28,57 @@ public class ControlsScreen implements Screen {
         
         
         Table table1 = new Table(skin);
+        table1.add("Keyboard");
+        table1.add();
+        table1.add();
+        if(Gdx.app.getType() == Application.ApplicationType.Desktop) {
+            table1.add();
+            table1.add("Controller");
+        }
+        table1.row();
         table1.add("A/D");
         table1.add(" - ");
         table1.add("Walk left/right");
+        if(Gdx.app.getType() == Application.ApplicationType.Desktop) {
+            table1.add(" - ");
+            table1.add("Left Stick");
+        }
         table1.row();
         table1.add("SPACE");
         table1.add(" - ");
         table1.add("Jump");
+        if(Gdx.app.getType() == Application.ApplicationType.Desktop) {
+            table1.add(" - ");
+            table1.add("A");
+        }
         table1.row();
         table1.add("W");
         table1.add(" - ");
         table1.add("Interact/Climb up");
+        if(Gdx.app.getType() == Application.ApplicationType.Desktop) {
+            table1.add(" - ");
+            table1.add("X/Left Stick");
+        }
         table1.row();
         table1.add("S");
         table1.add(" - ");
         table1.add("Climb down");
+        if(Gdx.app.getType() == Application.ApplicationType.Desktop) {
+            table1.add(" - ");
+            table1.add("Left Stick");
+        }
         table1.row();
-        table1.add("ESC");
+        table1.add("M");
         table1.add(" - ");
         table1.add("Main menu");
+        if(Gdx.app.getType() == Application.ApplicationType.Desktop) {
+            table1.add(" - ");
+            table1.add("Start");
+        }
+        table1.row();
+        table1.add("F");
+        table1.add(" - ");
+        table1.add("Toggle fullscreen");
         table.add(table1);
         table.row();
         
@@ -65,7 +97,7 @@ public class ControlsScreen implements Screen {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        ((InputMultiplexer)Gdx.input.getInputProcessor()).addProcessor(stage);
     }
 
     @Override
@@ -95,7 +127,7 @@ public class ControlsScreen implements Screen {
 
     @Override
     public void hide() {
-        Gdx.input.setInputProcessor(null);
+        ((InputMultiplexer)Gdx.input.getInputProcessor()).removeProcessor(stage);
         Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 

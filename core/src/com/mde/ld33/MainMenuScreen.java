@@ -83,7 +83,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        ((InputMultiplexer)Gdx.input.getInputProcessor()).addProcessor(stage);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void hide() {
-        Gdx.input.setInputProcessor(null);
+        ((InputMultiplexer)Gdx.input.getInputProcessor()).removeProcessor(stage);
         Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
