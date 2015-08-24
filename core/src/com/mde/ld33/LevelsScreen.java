@@ -53,7 +53,7 @@ public class LevelsScreen implements Screen {
         table.add("Area 2").pad(2f);
         table.row();
         
-        for(int i = 8; i <= 10; i++) {
+        for(int i = 8; i <= 11; i++) {
             TextButton lb = new TextButton("Level "+i, skin);
             final int lvl = i;
             lb.addListener(new ClickListener() {

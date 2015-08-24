@@ -258,6 +258,9 @@ public class PlayScreen implements Screen, ContactListener {
             playerSay(new String[] {"Finally I'm free!", "After 10,000 years of being imprisoned..."
                                    ,"Man that was boring!"});
         }
+        if(levelNr == 8) {
+            playerSay(new String[] {"Now that I've escaped the cave,\nthere obviously needs to be a ruin I have to go through!"});
+        }
         if(levelNr == 9) {
             playerSay(new String[] {"If you get stuck press M to go back\nto the main menu and restart the level."});
         }
